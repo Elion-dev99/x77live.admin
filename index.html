@@ -3,12 +3,205 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>従業員稼働監視</title>
+  <title>x77 Monitoring Dashboard</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --bg: linear-gradient(180deg, #18122B 0%, #0D091B 50%, #05030A 100%);
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: linear-gradient(90deg, #8B5CF6 0%, #EC4899 100%);
+      --text: #FFFFFF;
+      --text-sub: #9CA3AF;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: env(safe-area-inset-top) 16px calc(90px + env(safe-area-inset-bottom)) 16px;
+      background: var(--bg);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .container { max-width: 400px; margin: 0 auto; }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0 20px;
+    }
+    .profile { display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: #374151; }
+    .profile-sub { font-size: 11px; color: var(--text-sub); }
+    .profile-name { font-size: 14px; font-weight: bold; }
+    .icon-btn {
+      width: 36px; height: 36px;
+      border-radius: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* 2x2 Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 14px;
+      backdrop-filter: blur(10px);
+    }
+    .card-icon {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 10px;
+    }
+    .card-label { font-size: 11px; color: var(--text-sub); }
+    .card-value { font-size: 22px; font-weight: bold; margin: 4px 0 8px; }
+    .card-more {
+      font-size: 10px;
+      color: #A78BFA;
+      text-align: right;
+      display: flex; align-items: center; justify-content: flex-end; gap: 2px;
+    }
+
+    /* Tabs */
+    .section-title { font-size: 14px; font-weight: bold; margin-bottom: 10px; }
+    .tabs {
+      display: flex; gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+    .tab {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      white-space: nowrap;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-sub);
+    }
+    .tab.active {
+      background: rgba(139, 92, 246, 0.3);
+      border-color: #8B5CF6;
+      color: #FFF;
+    }
+
+    /* List Item */
+    .list { display: flex; flex-direction: column; gap: 10px; }
+    .list-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 14px;
+    }
+    .list-left { display: flex; align-items: center; gap: 10px; }
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+    }
+
+    /* Floating Navbar */
+    .navbar {
+      position: fixed;
+      bottom: calc(16px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 368px;
+      background: rgba(20, 15, 35, 0.85);
+      border: 1px solid var(--card-border);
+      border-radius: 30px;
+      padding: 6px;
+      backdrop-filter: blur(20px);
+      display: flex; justify-content: space-around;
+    }
+    .nav-btn {
+      background: transparent; border: none; color: var(--text-sub);
+      padding: 8px 16px; border-radius: 20px; font-size: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .nav-btn.active {
+      background: var(--accent);
+      color: #FFF;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <div id="app">
-    <h1>従業員稼働監視</h1>
-    <div id="employee-list"></div>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="profile">
+        <div class="avatar"></div>
+        <div>
+          <div class="profile-sub">Welcome Back,</div>
+          <div class="profile-name">幹部 太郎</div>
+        </div>
+      </div>
+      <div class="icon-btn"><i data-lucide="bell" size="18"></i></div>
+    </div>
+
+    <!-- 2x2 KPI Cards -->
+    <div class="grid">
+      <div class="card">
+        <div class="card-icon"><i data-lucide="users" size="16"></i></div>
+        <div class="card-label">稼働中従業員</div>
+        <div class="card-value">12</div>
+        <div class="card-more">See More <i data-lucide="chevron-right" size="12"></i></div>
+      </div>
+      <div class="card">
+        <div class="card-icon"><i data-lucide="activity" size="16"></i></div>
+        <div class="card-label">稼働率</div>
+        <div class="card-value">98%</div>
+        <div class="card-more">See More <i data-lucide="chevron-right" size="12"></i></div>
+      </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="tabs">
+      <div class="tab active">All</div>
+      <div class="tab">Active (12)</div>
+      <div class="tab">Offline (8)</div>
+    </div>
+
+    <!-- Status List -->
+    <div class="section-title">Recent Activity</div>
+    <div class="list">
+      <div class="card list-item">
+        <div class="list-left">
+          <div class="status-dot"></div>
+          <div>
+            <div style="font-size: 13px; font-weight: bold;">従業員 A</div>
+            <div style="font-size: 10px; color: var(--text-sub);">2 minutes ago</div>
+          </div>
+        </div>
+        <i data-lucide="more-vertical" size="16" style="color: var(--text-sub);"></i>
+      </div>
+    </div>
   </div>
+
+  <!-- Bottom Navbar -->
+  <div class="navbar">
+    <button class="nav-btn active"><i data-lucide="home" size="16"></i> Home</button>
+    <button class="nav-btn"><i data-lucide="users" size="16"></i></button>
+    <button class="nav-btn"><i data-lucide="bar-chart-2" size="16"></i></button>
+    <button class="nav-btn"><i data-lucide="settings" size="16"></i></button>
+  </div>
+
+  <script>lucide.createIcons();</script>
 </body>
 </html>
