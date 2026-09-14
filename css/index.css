@@ -186,6 +186,7 @@ body {
   align-items: center;
   gap: 8px;
   backdrop-filter: blur(12px);
+  cursor: pointer;
 }
 
 /* Activity List */
@@ -234,6 +235,14 @@ body {
   margin-top: 2px;
 }
 
+.icon-btn-sub {
+  background: transparent;
+  border: none;
+  color: var(--text-sub);
+  cursor: pointer;
+  padding: 4px;
+}
+
 /* Floating Bottom Navbar */
 .navbar {
   position: fixed;
@@ -263,6 +272,11 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-btn .nav-text {
+  display: none;
 }
 
 .nav-btn.active {
@@ -273,4 +287,8 @@ body {
   font-weight: 700;
   gap: 6px;
   box-shadow: 0 4px 15px rgba(147, 51, 234, 0.4);
+}
+
+.nav-btn.active .nav-text {
+  display: inline;
 }
