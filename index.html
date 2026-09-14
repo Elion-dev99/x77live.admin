@@ -21,7 +21,7 @@
           <div class="profile-name">Max John Doe</div>
         </div>
       </div>
-      <button class="icon-btn"><i data-lucide="bell" size="18"></i></button>
+      <button class="icon-btn" aria-label="Notifications"><i data-lucide="bell" size="18"></i></button>
     </header>
 
     <!-- 2x2 Grid Stats -->
@@ -78,14 +78,27 @@
   </div>
 
   <!-- Bottom Floating Navbar -->
-  <nav class="navbar">
-    <button class="nav-btn active">
-      <i data-lucide="home" size="16"></i> Home
+  <nav class="navbar" id="navbar">
+    <button class="nav-btn active" data-label="Home">
+      <i data-lucide="home" size="18"></i>
+      <span class="nav-text">Home</span>
     </button>
-    <button class="nav-btn"><i data-lucide="users" size="18"></i></button>
-    <button class="nav-btn"><i data-lucide="git-branch" size="18"></i></button>
-    <button class="nav-btn"><i data-lucide="activity" size="18"></i></button>
-    <button class="nav-btn"><i data-lucide="settings" size="18"></i></button>
+    <button class="nav-btn" data-label="Agents">
+      <i data-lucide="users" size="18"></i>
+      <span class="nav-text">Agents</span>
+    </button>
+    <button class="nav-btn" data-label="Workflows">
+      <i data-lucide="git-branch" size="18"></i>
+      <span class="nav-text">Workflows</span>
+    </button>
+    <button class="nav-btn" data-label="Activity">
+      <i data-lucide="activity" size="18"></i>
+      <span class="nav-text">Activity</span>
+    </button>
+    <button class="nav-btn" data-label="Settings">
+      <i data-lucide="settings" size="18"></i>
+      <span class="nav-text">Settings</span>
+    </button>
   </nav>
 
   <script src="js/index.js"></script>
