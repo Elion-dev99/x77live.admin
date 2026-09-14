@@ -1,41 +1,82 @@
 document.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
   fetchDashboardData();
+  setupGlobalEvents();
 });
 
 async function fetchDashboardData() {
   try {
     const response = await fetch('/api/status');
-    if (!response.ok) throw new Error('API fetch failed');
+    if (!response.ok) throw new Error('API Error');
     const data = await response.json();
     renderDashboard(data);
   } catch (error) {
-    console.warn('API未接続のため、ダミーデータを表示します:', error);
     renderDashboard(getDummyData());
   }
 }
 
 function renderDashboard(items) {
   const activeCount = items.filter(item => item.isOnline).length;
-  document.getElementById('stat-active').textContent = activeCount;
-  
+  const activeEl = document.getElementById('stat-active');
+  if (activeEl) activeEl.textContent = activeCount;
+
   const listContainer = document.getElementById('activity-list');
-  listContainer.innerHTML = items.map(item => `
-    <div class="activity-card">
-      <div class="activity-left">
-        <div class="activity-icon-box">
-          <i data-lucide="${item.isOnline ? 'headphones' : 'moon'}" size="18"></i>
+  if (listContainer) {
+    listContainer.innerHTML = items.map(item => `
+      <div class="activity-card">
+        <div class="activity-left">
+          <div class="activity-icon-box">
+            <i data-lucide="${item.isOnline ? 'headphones' : 'moon'}" size="18"></i>
+          </div>
+          <div>
+            <div class="activity-title">${escapeHtml(item.name)}</div>
+            <div class="activity-time">${item.isOnline ? 'Active now' : 'Offline'}</div>
+          </div>
         </div>
-        <div>
-          <div class="activity-title">${escapeHtml(item.name)}</div>
-          <div class="activity-time">${item.isOnline ? 'Active now' : 'Offline'}</div>
-        </div>
+        <button class="icon-btn-sub menu-btn" aria-label="Menu">
+          <i data-lucide="more-vertical" size="16"></i>
+        </button>
       </div>
-      <i data-lucide="more-vertical" size="16" style="color: var(--text-sub); cursor: pointer;"></i>
-    </div>
-  `).join('');
+    `).join('');
+  }
 
   lucide.createIcons();
+}
+
+function setupGlobalEvents() {
+  document.addEventListener('click', (e) => {
+    // 1. 下部ナビゲーションの切り替え
+    const navBtn = e.target.closest('.nav-btn');
+    if (navBtn) {
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      navBtn.classList.add('active');
+      return;
+    }
+
+    // 2. See More ボタン
+    const seeMoreBtn = e.target.closest('.see-more-btn');
+    if (seeMoreBtn) {
+      const card = seeMoreBtn.closest('.stat-card');
+      const label = card ? card.querySelector('.card-label').textContent : '';
+      alert(`詳細表示: ${label}`);
+      return;
+    }
+
+    // 3. Quick Actions チップ
+    const actionChip = e.target.closest('.action-chip');
+    if (actionChip) {
+      alert(`アクション実行: ${actionChip.textContent.trim()}`);
+      return;
+    }
+
+    // 4. View All リンク
+    const viewAllLink = e.target.closest('.view-all');
+    if (viewAllLink) {
+      e.preventDefault();
+      alert('全件一覧表示');
+      return;
+    }
+  });
 }
 
 function getDummyData() {
