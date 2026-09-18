@@ -45,11 +45,21 @@ function renderDashboard(items) {
 
 function setupGlobalEvents() {
   document.addEventListener('click', (e) => {
-    // 1. 下部ナビゲーションの切り替え
+    // 1. 下部ナビゲーションの切り替え（画面切り替え連動）
     const navBtn = e.target.closest('.nav-btn');
     if (navBtn) {
+      const targetViewId = navBtn.getAttribute('data-target');
+      
+      // ナビゲーションのハイライト切り替え
       document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
       navBtn.classList.add('active');
+
+      // 該当する画面（View）の表示切り替え
+      document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+      const targetView = document.getElementById(targetViewId);
+      if (targetView) {
+        targetView.classList.add('active');
+      }
       return;
     }
 
