@@ -28,6 +28,30 @@ body {
   margin: 0 auto;
 }
 
+/* 画面切替制御 */
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+/* プレースホルダー用カード（既存デザインに統合） */
+.placeholder-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 30px 16px;
+  backdrop-filter: blur(12px);
+  text-align: center;
+}
+
+.placeholder-text {
+  font-size: 13px;
+  color: var(--text-sub);
+}
+
 /* Header */
 .header {
   display: flex;
