@@ -1,31 +1,15 @@
-/**
- * Service Worker for x77 Executive Dashboard
- */
-const CACHE_NAME = 'x77-dashboard-v1';
-const ASSETS_TO_CACHE = [
-    './',
-    './index.html',
-    './css/index.css',
-    './js/index.js',
-    './js/core/events.js',
-    './js/views/settings.js',
-    './manifest.json'
-];
+// 開発用：キャッシュを一切保持せず常に最新ファイルを読み込む Service Worker
+self.addEventListener('install', () => {
+    self.skipWaiting();
+});
 
-// インストール時に静的ファイルをキャッシュ
-self.addEventListener('install', (event) => {
+self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(ASSETS_TO_CACHE);
-        })
+        caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
+            .then(() => self.clients.claim())
     );
 });
 
-// リソース取得時のキャッシュファースト制御
 self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request).then((response) => {
-            return response || fetch(event.request);
-        })
-    );
+    event.respondWith(fetch(event.request));
 });
