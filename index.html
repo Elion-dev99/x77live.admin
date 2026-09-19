@@ -79,10 +79,6 @@
         font-size: 1rem;
         margin-bottom: 1.2rem;
         outline: none;
-        transition: border-color 0.2s;
-      }
-      input[type="text"]:focus {
-        border-color: #007aff;
       }
 
       /* ボタン */
@@ -94,45 +90,63 @@
         font-size: 1rem;
         font-weight: 600;
         cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
         transition: opacity 0.2s;
       }
       .btn-primary { background-color: #007aff; color: #ffffff; }
       .btn-success { background-color: #34c759; color: #ffffff; }
+      .btn-danger { background-color: #ff3b30; color: #ffffff; margin-top: 1rem; }
       .btn:hover { opacity: 0.9; }
 
-      /* ステータスメッセージ */
+      /* 詳細エラー・通知エリア */
       .status {
-        margin-top: 1rem;
-        padding: 0.75rem;
-        border-radius: 10px;
+        margin-top: 1.2rem;
+        padding: 1rem;
+        border-radius: 12px;
         font-size: 0.85rem;
-        text-align: center;
+        line-height: 1.4;
         display: none;
+        text-align: left;
+        word-break: break-all;
       }
-      .status.info { display: block; background: #e5f1ff; color: #0055b3; }
-      .status.success { display: block; background: #e3f9e5; color: #1b7a28; }
-      .status.error { display: block; background: #ffe5e5; color: #c5221f; }
+      .status.info { display: block; background: #e5f1ff; color: #0055b3; border: 1px solid #b8daff; }
+      .status.success { display: block; background: #e3f9e5; color: #1b7a28; border: 1px solid #c3e6cb; }
+      .status.error { display: block; background: #fdf2f2; color: #9b1c1c; border: 1px solid #f8b4b4; }
+      .error-title { font-weight: bold; margin-bottom: 4px; display: block; font-size: 0.9rem; }
+      .error-detail { font-size: 0.75rem; opacity: 0.85; margin-top: 6px; }
+
+      /* 画面遷移用：ダッシュボード画面（初期状態は非表示） */
+      #dashboardScreen {
+        display: none;
+        text-align: center;
+      }
+      .welcome-badge {
+        background: #e3f9e5;
+        color: #1b7a28;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        display: inline-block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
     </style>
   </head>
   <body>
 
-    <div class="card">
+    <!-- 1. 認証画面（ログイン・登録） -->
+    <div id="authScreen" class="card">
       <div class="brand">
         <h1>x77live Admin</h1>
-        <p>Face ID パキー認証システム</p>
+        <p>Face ID パスキー認証システム</p>
       </div>
 
-      <!-- 切り替えタブ -->
+      <!-- タブ -->
       <div class="tabs">
         <button id="tabLogin" class="tab-btn active">ログイン</button>
         <button id="tabRegister" class="tab-btn">新規登録</button>
       </div>
 
-      <!-- 1. ログインフォーム -->
+      <!-- ログインフォーム -->
       <div id="loginForm" class="form-group active">
         <label for="loginUser">ユーザー名</label>
         <input type="text" id="loginUser" placeholder="例: admin" value="admin" />
@@ -142,7 +156,7 @@
         </button>
       </div>
 
-      <!-- 2. 新規登録フォーム -->
+      <!-- 新規登録フォーム -->
       <div id="registerForm" class="form-group">
         <label for="regUser">登録するユーザー名</label>
         <input type="text" id="regUser" placeholder="例: admin" value="admin" />
@@ -152,19 +166,39 @@
         </button>
       </div>
 
-      <!-- 通知エリア -->
+      <!-- 通知・エラー表示BOX -->
       <div id="statusMsg" class="status"></div>
     </div>
 
+    <!-- 2. 遷移先：管理画面（ログイン成功後に表示） -->
+    <div id="dashboardScreen" class="card">
+      <div class="welcome-badge">認証完了</div>
+      <h1 style="font-size: 1.4rem; margin-bottom: 0.5rem;">ダッシュボード</h1>
+      <p style="color: #666; font-size: 0.9rem; margin-bottom: 1.5rem;">
+        ようこそ、<strong id="loggedInUser"></strong> 様
+      </p>
+      <p style="font-size: 0.85rem; color: #8e8e93; line-height: 1.5;">
+        Face ID によるログイン処理および画面遷移が正常に完了いたしました。
+      </p>
+
+      <button id="btnLogout" class="btn btn-danger">
+        ログアウト
+      </button>
+    </div>
+
     <script>
-      // DOM要素の取得
       const tabLogin = document.getElementById('tabLogin');
       const tabRegister = document.getElementById('tabRegister');
       const loginForm = document.getElementById('loginForm');
       const registerForm = document.getElementById('registerForm');
       const statusMsg = document.getElementById('statusMsg');
 
-      // タブ切り替え処理
+      const authScreen = document.getElementById('authScreen');
+      const dashboardScreen = document.getElementById('dashboardScreen');
+      const loggedInUser = document.getElementById('loggedInUser');
+      const btnLogout = document.getElementById('btnLogout');
+
+      // タブ切り替え
       tabLogin.addEventListener('click', () => {
         tabLogin.classList.add('active');
         tabRegister.classList.remove('active');
@@ -181,26 +215,45 @@
         hideStatus();
       });
 
-      function showStatus(msg, type) {
-        statusMsg.textContent = msg;
+      // 状態メッセージ表示（エラー時は詳細を出力）
+      function showStatus(title, message, type, errDetail = null) {
         statusMsg.className = `status ${type}`;
+        let html = `<span class="error-title">${title}</span><div>${message}</div>`;
+        if (errDetail) {
+          html += `<div class="error-detail">詳細コード: ${errDetail}</div>`;
+        }
+        statusMsg.innerHTML = html;
       }
 
       function hideStatus() {
+        statusMsg.className = 'status';
         statusMsg.style.display = 'none';
       }
 
+      // 画面遷移関数（ログイン画面 ↔ ダッシュボード）
+      function navigateToDashboard(username) {
+        loggedInUser.textContent = username;
+        authScreen.style.display = 'none';
+        dashboardScreen.style.display = 'block';
+      }
+
+      btnLogout.addEventListener('click', () => {
+        dashboardScreen.style.display = 'none';
+        authScreen.style.display = 'block';
+        hideStatus();
+      });
+
       // ----------------------------------------------------
-      // ■ 新規アカウント＆Face ID 登録処理
+      // ■ 新規登録処理
       // ----------------------------------------------------
       document.getElementById('btnDoRegister').addEventListener('click', async () => {
         const username = document.getElementById('regUser').value.trim();
         if (!username) {
-          showStatus('ユーザー名を入力してください。', 'error');
+          showStatus('入力エラー', 'ユーザー名を入力してください。', 'error');
           return;
         }
 
-        showStatus('Face ID 登録画面を呼び出しています...', 'info');
+        showStatus('処理中', 'Face ID 登録画面を呼び出しています...', 'info');
 
         try {
           const challenge = new Uint8Array(32);
@@ -215,49 +268,47 @@
                 name: username,
                 displayName: username
               },
-              pubKeyCredParams: [{ alg: -7, type: "public-key" }], // ES256
+              pubKeyCredParams: [{ alg: -7, type: "public-key" }],
               authenticatorSelection: {
-                authenticatorAttachment: "platform", // iPhone本体（Face ID）を強制指定
+                authenticatorAttachment: "platform",
                 userVerification: "required",
-                residentKey: "preferred"
+                residentKey: "required"
               },
               timeout: 60000
             }
           };
 
-          // iPhoneのFace IDダイアログ起動
           const credential = await navigator.credentials.create(createOptions);
 
           if (credential) {
-            // 鍵情報をローカルに保存（ユーザー名紐付け）
             const credIdBase64 = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
             localStorage.setItem(`faceid_${username}`, credIdBase64);
 
-            showStatus(`「${username}」のFace ID登録が完了しました！ログインタブからお試しください。`, 'success');
+            showStatus('登録成功', `「${username}」のFace ID登録が完了しました！ログインタブに切り替えてログインをお試しください。`, 'success');
           }
         } catch (err) {
-          console.error(err);
-          showStatus('登録エラー: ' + err.message, 'error');
+          console.error('Registration Error:', err);
+          handleWebAuthnError(err, '登録');
         }
       });
 
       // ----------------------------------------------------
-      // ■ Face ID ログイン処理
+      // ■ ログイン処理（成功時に画面遷移）
       // ----------------------------------------------------
       document.getElementById('btnDoLogin').addEventListener('click', async () => {
         const username = document.getElementById('loginUser').value.trim();
         if (!username) {
-          showStatus('ユーザー名を入力してください。', 'error');
+          showStatus('入力エラー', 'ユーザー名を入力してください。', 'error');
           return;
         }
 
         const savedCredId = localStorage.getItem(`faceid_${username}`);
         if (!savedCredId) {
-          showStatus(`「${username}」のFace IDが登録されていません。「新規登録」タブから先に登録を行ってください。`, 'error');
+          showStatus('未登録エラー', `「${username}」のFace IDがこの端末に保存されていません。「新規登録」タブから先に登録を行ってください。`, 'error');
           return;
         }
 
-        showStatus('Face ID 認証中...', 'info');
+        showStatus('処理中', 'Face ID 認証を実行しています...', 'info');
 
         try {
           const challenge = new Uint8Array(32);
@@ -277,17 +328,39 @@
             }
           };
 
-          // iPhoneのFace IDダイアログ起動
           const assertion = await navigator.credentials.get(getOptions);
 
           if (assertion) {
-            showStatus(`ログイン成功！ようこそ、${username} 様。`, 'success');
+            // 認証成功 -> ダッシュボード画面へ移動
+            navigateToDashboard(username);
           }
         } catch (err) {
-          console.error(err);
-          showStatus('ログインエラー: ' + err.message, 'error');
+          console.error('Login Error:', err);
+          handleWebAuthnError(err, 'ログイン');
         }
       });
+
+      // ----------------------------------------------------
+      // ■ エラー詳細解析・表示関数
+      // ----------------------------------------------------
+      function handleWebAuthnError(err, actionName) {
+        let title = `${actionName}エラー`;
+        let msg = '予期せぬエラーが発生いたしました。';
+        let detail = `${err.name}: ${err.message}`;
+
+        if (err.name === 'NotAllowedError') {
+          title = '認証キャンセルまたはタイムアウト';
+          msg = 'Face ID 認証がキャンセルされたか、タイムアウトいたしました。もう一度お試しください。';
+        } else if (err.name === 'InvalidStateError') {
+          title = '登録済みエラー';
+          msg = 'この端末・ユーザーにはすでに同一のキーが登録されている可能性がございます。';
+        } else if (err.name === 'NotSupportedError') {
+          title = '非対応端末・ブラウザ';
+          msg = 'お使いの端末またはブラウザは Face ID 認証に対応しておりません。';
+        }
+
+        showStatus(title, msg, 'error', detail);
+      }
     </script>
   </body>
 </html>
