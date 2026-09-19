@@ -26,7 +26,7 @@
     }
   </script>
 
-  <!-- Face ID ログイン画面専用スタイル（既存CSSを邪魔しない独立定義） -->
+  <!-- Face ID ログインオーバーレイ専用スタイル（本体CSSに影響を与えない独立設計） -->
   <style>
     #auth-overlay {
       position: fixed;
@@ -35,7 +35,7 @@
       width: 100vw;
       height: 100vh;
       background-color: #0b0b12;
-      z-index: 99999;
+      z-index: 999999;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -71,23 +71,18 @@
     .auth-status { margin-top: 1rem; padding: 0.8rem; border-radius: 12px; font-size: 0.8rem; display: none; text-align: left; word-break: break-all; line-height: 1.4; }
     .auth-status.error { display: block; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; }
     .auth-status.info { display: block; background: rgba(168, 85, 247, 0.15); border: 1px solid #a855f7; color: #d8b4fe; }
-
-    /* ログイン成功前はダッシュボード本体を一時非表示 */
-    .container.protected-hidden {
-      display: none !important;
-    }
   </style>
 </head>
 
 <body>
 
   <!-- ===================================================== -->
-  <!-- Face ID 認証画面（ログイン成功時に自動消去されます） -->
+  <!-- Face ID 認証画面（全画面最前面に配置） -->
   <!-- ===================================================== -->
   <div id="auth-overlay">
     <div class="auth-card">
       <h1 class="auth-title">x77 Executive</h1>
-      <p class="auth-sub">Face ID パスキー認証</p>
+      <p class="auth-sub">Face ID パスキル認証</p>
 
       <div class="auth-tabs">
         <button id="authTabLogin" class="auth-tab-btn active">ログイン</button>
@@ -117,8 +112,8 @@
   </div>
 
 
-  <!-- 全画面を包むコンテナ（元のコードを100%そのまま維持） -->
-  <div class="container protected-hidden">
+  <!-- 全画面を包むコンテナ（元のコードそのままで裏で描画） -->
+  <div class="container">
 
     <!-- ========================= -->
     <!-- Header（プロフィール＋通知） -->
@@ -277,7 +272,7 @@
 
 
     <!-- ===================================================== -->
-    <!-- Bottom Floating Navbar（★ container のの中に移動済み） -->
+    <!-- Bottom Floating Navbar -->
     <!-- ===================================================== -->
     <nav class="navbar" id="navbar">
 
@@ -307,23 +302,18 @@
         <span class="nav-text">Settings</span>
       </button>
 
-      <!-- ボタン押下イベント（events.jsで拾う） -->
-      <button data-action="update-stock">更新</button>
-      <button data-action="open-settings">設定</button>
-
     </nav>
 
   </div> <!-- /container -->
 
 
-  <!-- 初期化JS（元のスクリプトそのまま） -->
+  <!-- 初期化JS -->
   <script src="js/index.js"></script>
 
-  <!-- Face ID 認証制御用スクリプト -->
+  <!-- Face ID 認証制御スクリプト -->
   <script>
     (function() {
       const authOverlay = document.getElementById('auth-overlay');
-      const container = document.querySelector('.container');
       const authTabLogin = document.getElementById('authTabLogin');
       const authTabRegister = document.getElementById('authTabRegister');
       const authLoginForm = document.getElementById('authLoginForm');
@@ -357,14 +347,20 @@
         authStatus.style.display = 'none';
       }
 
-      // ログイン成功時に元のダッシュボードを完全に展開
+      // ログイン成功時にオーバーレイを消去し、アイコンを再初期化
       function unlockDashboard() {
         authOverlay.style.display = 'none';
-        container.classList.remove('protected-hidden');
         if (window.lucide && typeof window.lucide.createIcons === 'function') {
           window.lucide.createIcons();
         }
       }
+
+      // ページロード時にもLucideアイコンを確実に適用
+      window.addEventListener('DOMContentLoaded', () => {
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+          window.lucide.createIcons();
+        }
+      });
 
       // 1. Face ID 新規登録
       document.getElementById('btnAuthRegister').addEventListener('click', async () => {
@@ -399,7 +395,7 @@
           if (credential) {
             const credIdBase64 = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
             localStorage.setItem(`faceid_${username}`, credIdBase64);
-            showStatus(`「${username}」のFace ID登録が完了いたしました！「ログイン」タブからログインを行ってください。`, 'info');
+            showStatus(`「${username}」のFace ID登録が完了いたしました。「ログイン」タブからログインを行ってください。`, 'info');
           }
         } catch (err) {
           console.error(err);
@@ -434,7 +430,6 @@
           });
 
           if (assertion) {
-            // 認証成功時：オーバーレイを消して元のダッシュボード全機能を表示
             unlockDashboard();
           }
         } catch (err) {
