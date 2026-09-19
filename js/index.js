@@ -68,8 +68,9 @@ function initNavigation() {
 
             navButtons.forEach(b => {
                 b.classList.remove('active');
-                const span = b.querySelector('span');
-                if (span) span.remove();
+                // 元々HTMLにある<span>（文字）を消去してレイアウトを破壊していた原因箇所を無効化
+                // const span = b.querySelector('span');
+                // if (span) span.remove();
             });
 
             btn.classList.add('active');
