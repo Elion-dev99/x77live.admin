@@ -3,6 +3,8 @@ import { setupEvents } from './core/events.js';
 document.addEventListener('DOMContentLoaded', () => {
   setupNavigation();
   setupEvents();
+  // ★ APIを使う画面が増えたらここに import を追加する
+  // import { apiGet } from './core/api.js';
 });
 
 document.addEventListener('DOMContentLoaded', () => {
