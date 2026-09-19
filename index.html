@@ -1,110 +1,112 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>x77 Executive Dashboard</title>
-    <!-- PWA Manifest & Meta -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0b0813">
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/index.css">
-    <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-</head>
-<body>
-    <div class="app-container">
-        <!-- Main Views Container -->
-        <main class="views-container">
-            <!-- index.html の main タグ内部に追加 -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>x77live Admin - ログイン</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background-color: #f4f6f8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .login-card {
+        background: #ffffff;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+      }
+      h1 { font-size: 1.5rem; color: #1a1a1a; margin-bottom: 0.5rem; }
+      p { font-size: 0.875rem; color: #666; margin-bottom: 2rem; }
+      
+      .btn-faceid {
+        width: 100%;
+        padding: 0.875rem;
+        background-color: #0071e3;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background-color 0.2s;
+      }
+      .btn-faceid:hover { background-color: #0077ed; }
+      .status-msg { margin-top: 1rem; font-size: 0.875rem; color: #d93025; }
+      .status-msg.success { color: #188038; }
+    </style>
+  </head>
+  <body>
 
-    <!-- LOGIN VIEW (未認証時表示) -->
-    <div class="view" id="view-login"></div>
+    <div class="login-card">
+      <h1>x77live Admin</h1>
+      <p>管理者アカウントへログイン</p>
 
-    <!-- HOME / DASHBOARD VIEW -->
-    <div class="view" id="view-home">
-        ...
+      <button id="faceIdBtn" class="btn-faceid">
+        <span>􀎸</span> Face ID でログイン
+      </button>
 
-            <!-- HOME / DASHBOARD VIEW (初期表示画面) -->
-            <div class="view active" id="view-home">
-                <!-- App Header -->
-                <header class="app-header">
-                    <div class="user-profile">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="avatar">
-                        <div class="user-info">
-                            <span class="greeting">Welcome Back,</span>
-                            <h2 class="username">Max John Doe</h2>
-                        </div>
-                    </div>
-                    <button class="icon-btn-ghost" data-action="notifications" aria-label="Notifications">
-                        <i data-lucide="bell"></i>
-                    </button>
-                </header>
-
-                <!-- Dynamic Dashboard Content -->
-                <div id="dashboard-content"></div>
-            </div>
-
-            <!-- AGENTS VIEW -->
-            <div class="view" id="view-agents">
-                <header class="view-header">
-                    <h2>Agents Management</h2>
-                    <p class="subtitle">Active agent instances and status</p>
-                </header>
-                <div id="agents-content"></div>
-            </div>
-
-            <!-- WORKFLOWS VIEW -->
-            <div class="view" id="view-workflows">
-                <header class="view-header">
-                    <h2>Workflows</h2>
-                    <p class="subtitle">Automated pipeline configuration</p>
-                </header>
-                <div id="workflows-content"></div>
-            </div>
-
-            <!-- ACTIVITY VIEW -->
-            <div class="view" id="view-activity">
-                <header class="view-header">
-                    <h2>System Activity</h2>
-                    <p class="subtitle">Real-time action logs and events</p>
-                </header>
-                <div id="activity-content"></div>
-            </div>
-
-            <!-- SETTINGS VIEW -->
-            <div class="view" id="view-settings">
-                <header class="view-header">
-                    <h2>Settings</h2>
-                    <p class="subtitle">System and application parameters</p>
-                </header>
-                <div id="settings-content"></div>
-            </div>
-
-        </main>
-
-        <!-- Navbar (app-container内に配置・仕様準拠) -->
-        <nav class="navbar">
-            <button class="nav-btn active" data-target="view-home" aria-label="Home">
-                <i data-lucide="home"></i>
-                <span>Home</span>
-            </button>
-            <button class="nav-btn" data-target="view-agents" aria-label="Agents">
-                <i data-lucide="users"></i>
-            </button>
-            <button class="nav-btn" data-target="view-workflows" aria-label="Workflows">
-                <i data-lucide="git-fork"></i>
-            </button>
-            <button class="nav-btn" data-target="view-activity" aria-label="Activity">
-                <i data-lucide="activity"></i>
-            </button>
-            <button class="nav-btn" data-target="view-settings" aria-label="Settings">
-                <i data-lucide="settings"></i>
-            </button>
-        </nav>
+      <div id="status" class="status-msg"></div>
     </div>
 
-    <!-- Application Module Entry -->
-    <script type="module" src="js/index.js"></script>
-</body>
+    <script>
+      const faceIdBtn = document.getElementById('faceIdBtn');
+      const statusDiv = document.getElementById('status');
+
+      // 生体認証（WebAuthn）が利用可能か判定
+      if (!window.PublicKeyCredential) {
+        statusDiv.textContent = 'お使いの端末・ブラウザはFace IDに対応しておりません。';
+        faceIdBtn.disabled = true;
+      }
+
+      faceIdBtn.addEventListener('click', async () => {
+        statusDiv.textContent = '';
+        statusDiv.className = 'status-msg';
+
+        try {
+          // 本来はサーバーからランダムな「チャレンジ文字列」を取得します
+          const challenge = new Uint8Array(32);
+          window.crypto.getRandomValues(challenge);
+
+          // Face ID（生体認証）の呼び出し設定
+          const publicKeyCredentialRequestOptions = {
+            challenge: challenge,
+            timeout: 60000,
+            userVerification: 'required' // 生体認証（Face ID）を必須に指定
+          };
+
+          statusDiv.textContent = 'Face ID 認証中...';
+
+          // iOSのFace IDダイアログを起動
+          const assertion = await navigator.credentials.get({
+            publicKey: publicKeyCredentialRequestOptions
+          });
+
+          if (assertion) {
+            statusDiv.className = 'status-msg success';
+            statusDiv.textContent = 'Face ID 認証に成功いたしました！';
+            // TODO: ここでサーバーへ認証情報を送信してログイン完了処理を行います
+          }
+        } catch (err) {
+          console.error(err);
+          if (err.name === 'NotAllowedError') {
+            statusDiv.textContent = 'Face ID 認証がキャンセルされたか拒否されました。';
+          } else {
+            statusDiv.textContent = '認証中にエラーが発生いたしました。事前にFace IDキーの登録が必要です。';
+          }
+        }
+      });
+    </script>
+  </body>
 </html>
