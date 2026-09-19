@@ -1,10 +1,304 @@
-/* Floating Navbar Rules (スマホアプリ完全対応版) */
+/* ==================================================
+   x77 Executive Dashboard Master Stylesheet
+   ================================================== */
+
+:root {
+    --bg-dark: #0b0813;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --text-main: #ffffff;
+    --text-muted: #8e8a9f;
+    --purple-active: linear-gradient(135deg, #a855f7, #7e22ce);
+    --icon-purple: #d8b4fe;
+    --danger-red: #ef4444;
+    --danger-bg: rgba(239, 68, 68, 0.1);
+    --nav-height: 64px;
+}
+
+/* Reset & Base Rules */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding-bottom: 0 !important;
+    min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* App Container */
+.app-container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 16px 16px calc(var(--nav-height) + 32px) 16px;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* View Switcher Rules */
+.view {
+    display: none;
+}
+
+.view.active {
+    display: block;
+}
+
+/* View Generic Header */
+.view-header {
+    margin-bottom: 20px;
+}
+
+.view-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.view-header .subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* App Home Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.greeting {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: block;
+}
+
+.username {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.icon-btn-ghost {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-main);
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.icon-btn-ghost:active {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.icon-btn-ghost svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Metrics Grid (2x2) */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.metric-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.card-icon-wrapper {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    color: var(--icon-purple);
+}
+
+.card-icon-wrapper svg {
+    width: 18px;
+    height: 18px;
+}
+
+.card-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.card-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.see-more-btn {
+    align-self: flex-end;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    color: #e9d5ff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.see-more-btn:active {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.see-more-btn svg {
+    width: 12px;
+    height: 12px;
+}
+
+/* Section Common Structure */
+.section-container {
+    margin-bottom: 24px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.section-header h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.view-all-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+/* Quick Actions Group */
+.quick-actions-group {
+    display: flex;
+    gap: 12px;
+}
+
+.action-chip {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-main);
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.action-chip:active {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.action-chip svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Activity List */
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.activity-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.activity-icon-box {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--icon-purple);
+}
+
+.activity-icon-box svg {
+    width: 20px;
+    height: 20px;
+}
+
+.activity-details {
+    flex: 1;
+}
+
+.activity-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.activity-subtitle {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+/* Floating Navbar Rules (アプリの縦画面でも5つ全て収まる安全微調整版) */
 .navbar {
     position: fixed;
     bottom: 16px;
     left: 50%;
     transform: translateX(-50%);
-    width: calc(100% - 20px); /* 左右の余白を少しだけ狭めて領域を確保 */
+    width: calc(100% - 24px); /* 左右の余白を少しだけ詰めて領域を確保 */
     max-width: 440px;
     height: var(--nav-height);
     background: rgba(15, 11, 26, 0.90);
@@ -13,7 +307,7 @@
     border: 1px solid var(--card-border);
     border-radius: 32px;
     display: flex;
-    justify-content: space-evenly; /* 5つのボタンを均等かつ絶対に収まるように配置 */
+    justify-content: space-evenly;
     align-items: center;
     padding: 0 4px;
     z-index: 1000;
@@ -28,12 +322,12 @@
     align-items: center;
     justify-content: center;
     gap: 3px;
-    padding: 8px 6px; /* スマホ幅で5つ並ぶように左右パディングをコンパクト化 */
+    padding: 8px 6px; /* 狭い幅でも収まるよう余白を最適化 */
     border-radius: 20px;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 0.7rem; /* 文字サイズを少し調整して収まりを完全に担保 */
-    white-space: nowrap; /* 文字が勝手に改行されないようにする */
+    font-size: 0.68rem; /* フォントをほんの少しだけコンパクトにして5つ収める */
+    white-space: nowrap;
 }
 
 .nav-btn svg {
@@ -45,8 +339,8 @@
 .nav-btn.active {
     background: var(--purple-active);
     color: #ffffff;
-    padding: 8px 10px; /* アクティブ時の横幅が大きすぎて押し出されないよう最適化 */
+    padding: 8px 10px;
     font-weight: 500;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
 }
