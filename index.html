@@ -1,235 +1,102 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-
-  <!-- スマホ最適化 -->
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0,
-                 user-scalable=no, viewport-fit=cover">
-
-  <title>x77 Executive Dashboard</title>
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="css/index.css">
-
-  <!-- アイコン（Lucide） -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- PWA設定 -->
-  <link rel="manifest" href="/manifest.json">
-
-  <!-- Service Worker登録 -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js');
-    }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>x77 Executive Dashboard</title>
+    <!-- PWA Manifest & Meta -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0b0813">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/index.css">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-
 <body>
+    <div class="app-container">
+        <!-- Main Views Container -->
+        <main class="views-container">
 
-  <!-- 全画面を包むコンテナ -->
-  <div class="container">
+            <!-- HOME / DASHBOARD VIEW (初期表示画面) -->
+            <div class="view active" id="view-home">
+                <!-- App Header -->
+                <header class="app-header">
+                    <div class="user-profile">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="avatar">
+                        <div class="user-info">
+                            <span class="greeting">Welcome Back,</span>
+                            <h2 class="username">Max John Doe</h2>
+                        </div>
+                    </div>
+                    <button class="icon-btn-ghost" data-action="notifications" aria-label="Notifications">
+                        <i data-lucide="bell"></i>
+                    </button>
+                </header>
 
-    <!-- ========================= -->
-    <!-- Header（プロフィール＋通知） -->
-    <!-- ========================= -->
-    <header class="header">
-      <div class="profile">
-        <div class="avatar-wrap">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
-               alt="Avatar" class="avatar-img">
-        </div>
-        <div>
-          <div class="profile-sub">Welcome Back,</div>
-          <div class="profile-name">Max John Doe</div>
-        </div>
-      </div>
+                <!-- Dynamic Dashboard Content -->
+                <div id="dashboard-content"></div>
+            </div>
 
-      <button class="icon-btn" aria-label="Notifications">
-        <i data-lucide="bell" size="18"></i>
-      </button>
-    </header>
+            <!-- AGENTS VIEW -->
+            <div class="view" id="view-agents">
+                <header class="view-header">
+                    <h2>Agents Management</h2>
+                    <p class="subtitle">Active agent instances and status</p>
+                </header>
+                <div id="agents-content"></div>
+            </div>
 
+            <!-- WORKFLOWS VIEW -->
+            <div class="view" id="view-workflows">
+                <header class="view-header">
+                    <h2>Workflows</h2>
+                    <p class="subtitle">Automated pipeline configuration</p>
+                </header>
+                <div id="workflows-content"></div>
+            </div>
 
-    <!-- ========================= -->
-    <!-- 1. Home View（初期表示） -->
-    <!-- ========================= -->
-    <div class="view active" id="view-home">
+            <!-- ACTIVITY VIEW -->
+            <div class="view" id="view-activity">
+                <header class="view-header">
+                    <h2>System Activity</h2>
+                    <p class="subtitle">Real-time action logs and events</p>
+                </header>
+                <div id="activity-content"></div>
+            </div>
 
-      <!-- 2x2 グリッド統計 -->
-      <section class="grid-2x2">
+            <!-- SETTINGS VIEW -->
+            <div class="view" id="view-settings">
+                <header class="view-header">
+                    <h2>Settings</h2>
+                    <p class="subtitle">System and application parameters</p>
+                </header>
+                <div id="settings-content"></div>
+            </div>
 
-        <!-- Active Agents -->
-        <div class="stat-card">
-          <div class="card-icon"><i data-lucide="users" size="16"></i></div>
-          <div class="card-label">Active Agents</div>
-          <div class="card-value" id="stat-active">12</div>
-          <button class="see-more-btn">See More <i data-lucide="arrow-right" size="10"></i></button>
-        </div>
+        </main>
 
-        <!-- Running Workflows -->
-        <div class="stat-card">
-          <div class="card-icon"><i data-lucide="workflow" size="16"></i></div>
-          <div class="card-label">Running Workflows</div>
-          <div class="card-value" id="stat-workflows">8</div>
-          <button class="see-more-btn">See More <i data-lucide="arrow-right" size="10"></i></button>
-        </div>
-
-        <!-- Tasks Completed -->
-        <div class="stat-card">
-          <div class="card-icon"><i data-lucide="check-square" size="16"></i></div>
-          <div class="card-label">Tasks Completed</div>
-          <div class="card-value" id="stat-tasks">144</div>
-          <button class="see-more-btn">See More <i data-lucide="arrow-right" size="10"></i></button>
-        </div>
-
-        <!-- Success Rate -->
-        <div class="stat-card">
-          <div class="card-icon"><i data-lucide="line-chart" size="16"></i></div>
-          <div class="card-label">Success Rate</div>
-          <div class="card-value" id="stat-rate">98%</div>
-          <button class="see-more-btn">See More <i data-lucide="arrow-right" size="10"></i></button>
-        </div>
-
-      </section>
-
-
-      <!-- Quick Actions -->
-      <section class="section-block">
-        <div class="section-header">
-          <span class="section-title">Quick Actions</span>
-          <a href="#" class="view-all">View all</a>
-        </div>
-
-        <div class="quick-actions-scroll">
-          <button class="action-chip">
-            <i data-lucide="plus" size="14"></i> Creative Agent
-          </button>
-
-          <button class="action-chip">
-            <i data-lucide="bar-chart-2" size="14"></i> View Analytics
-          </button>
-        </div>
-      </section>
-
-
-      <!-- Recent Activity -->
-      <section class="section-block">
-        <div class="section-header">
-          <span class="section-title">Recent Activity</span>
-          <a href="#" class="view-all">View all</a>
-        </div>
-
-        <div class="activity-list" id="activity-list"></div>
-      </section>
-
-    </div> <!-- /view-home -->
-
-
-    <!-- ========================= -->
-    <!-- 2. Agents View -->
-    <!-- ========================= -->
-    <div class="view" id="view-agents">
-      <section class="section-block">
-        <div class="section-header">
-          <span class="section-title">Agents</span>
-        </div>
-        <div class="placeholder-card">
-          <div class="placeholder-text">Agents Content Area</div>
-        </div>
-      </section>
+        <!-- Navbar (app-container内に配置・仕様準拠) -->
+        <nav class="navbar">
+            <button class="nav-btn active" data-target="view-home" aria-label="Home">
+                <i data-lucide="home"></i>
+                <span>Home</span>
+            </button>
+            <button class="nav-btn" data-target="view-agents" aria-label="Agents">
+                <i data-lucide="users"></i>
+            </button>
+            <button class="nav-btn" data-target="view-workflows" aria-label="Workflows">
+                <i data-lucide="git-fork"></i>
+            </button>
+            <button class="nav-btn" data-target="view-activity" aria-label="Activity">
+                <i data-lucide="activity"></i>
+            </button>
+            <button class="nav-btn" data-target="view-settings" aria-label="Settings">
+                <i data-lucide="settings"></i>
+            </button>
+        </nav>
     </div>
 
-
-    <!-- ========================= -->
-    <!-- 3. Workflows View -->
-    <!-- ========================= -->
-    <div class="view" id="view-workflows">
-      <section class="section-block">
-        <div class="section-header">
-          <span class="section-title">Workflows</span>
-        </div>
-        <div class="placeholder-card">
-          <div class="placeholder-text">Workflows Content Area</div>
-        </div>
-      </section>
-    </div>
-
-
-    <!-- ========================= -->
-    <!-- 4. Activity View -->
-    <!-- ========================= -->
-    <div class="view" id="view-activity">
-      <section class="section-block">
-        <div class="section-header">
-          <span class="section-title">Activity</span>
-        </div>
-        <div class="placeholder-card">
-          <div class="placeholder-text">Activity Content Area</div>
-        </div>
-      </section>
-    </div>
-
-
-    <!-- ========================= -->
-    <!-- 5. Settings View -->
-    <!-- ========================= -->
-    <div class="view" id="view-settings">
-      <section class="section-block">
-        <div class="section-header">
-          <span class="section-title">Settings</span>
-        </div>
-        <div class="placeholder-card">
-          <div class="placeholder-text">Settings Content Area</div>
-        </div>
-      </section>
-    </div>
-
-
-    <!-- ===================================================== -->
-    <!-- Bottom Floating Navbar（★ container の中に移動済み） -->
-    <!-- ===================================================== -->
-    <nav class="navbar" id="navbar">
-
-      <!-- SPA画面切替ボタン -->
-      <button class="nav-btn active" data-target="view-home">
-        <i data-lucide="home" size="18"></i>
-        <span class="nav-text">Home</span>
-      </button>
-
-      <button class="nav-btn" data-target="view-agents">
-        <i data-lucide="users" size="18"></i>
-        <span class="nav-text">Agents</span>
-      </button>
-
-      <button class="nav-btn" data-target="view-workflows">
-        <i data-lucide="git-branch" size="18"></i>
-        <span class="nav-text">Workflows</span>
-      </button>
-
-      <button class="nav-btn" data-target="view-activity">
-        <i data-lucide="activity" size="18"></i>
-        <span class="nav-text">Activity</span>
-      </button>
-
-      <button class="nav-btn" data-target="view-settings">
-        <i data-lucide="settings" size="18"></i>
-        <span class="nav-text">Settings</span>
-      </button>
-
-      <!-- ボタン押下イベント（events.jsで拾う） -->
-      <button data-action="update-stock">更新</button>
-      <button data-action="open-settings">設定</button>
-
-    </nav>
-
-  </div> <!-- /container -->
-
-
-  <!-- 初期化JS -->
-  <script src="js/index.js"></script>
-
+    <!-- Application Module Entry -->
+    <script type="module" src="js/index.js"></script>
 </body>
 </html>
