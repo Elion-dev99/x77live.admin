@@ -1,0 +1,9 @@
+{
+  "name": "x77 Executive Dashboard",
+  "short_name": "x77 Exec",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#110c1f",
+  "theme_color": "#110c1f",
+  "icons": []
+}
