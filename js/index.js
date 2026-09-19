@@ -2,6 +2,7 @@ import { setupNavigation } from './core/navigation.js';
 import { setupEvents } from './core/events.js';
 document.addEventListener('DOMContentLoaded', () => {
   setupNavigation();
+  setupEvents();
 });
 
 document.addEventListener('DOMContentLoaded', () => {
