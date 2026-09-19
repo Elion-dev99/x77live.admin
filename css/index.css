@@ -10,6 +10,8 @@
     --text-muted: #8e8a9f;
     --purple-active: linear-gradient(135deg, #a855f7, #7e22ce);
     --icon-purple: #d8b4fe;
+    --danger-red: #ef4444;
+    --danger-bg: rgba(239, 68, 68, 0.1);
     --nav-height: 64px;
 }
 
@@ -301,6 +303,256 @@ body {
 .more-btn svg {
     width: 16px;
     height: 16px;
+}
+
+/* ==================================================
+   Account Settings Styles
+   ================================================== */
+.account-profile-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.avatar-wrapper {
+    position: relative;
+    width: 64px;
+    height: 64px;
+}
+
+.profile-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(168, 85, 247, 0.5);
+}
+
+.avatar-edit-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #7e22ce;
+    border: 2px solid var(--bg-dark);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.avatar-edit-btn svg {
+    width: 12px;
+    height: 12px;
+}
+
+.profile-details {
+    flex: 1;
+}
+
+.profile-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.role-badge {
+    background: rgba(168, 85, 247, 0.2);
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    color: #d8b4fe;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.profile-email {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.profile-id {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 2px;
+    font-family: monospace;
+}
+
+.secondary-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--card-border);
+    color: var(--text-main);
+    padding: 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.secondary-btn:active {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.secondary-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Settings List & Items */
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.settings-item {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.settings-item:active {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.settings-item-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--icon-purple);
+}
+
+.settings-item-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.settings-item-content {
+    flex: 1;
+}
+
+.settings-item-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.settings-item-subtitle {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.arrow-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+}
+
+/* Toggle Switch UI */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.2);
+    transition: 0.3s;
+    border-radius: 24px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+    background: var(--purple-active);
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+}
+
+/* Logout Button */
+.logout-btn {
+    width: 100%;
+    background: var(--danger-bg);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: var(--danger-red);
+    padding: 14px;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.logout-btn:active {
+    background: rgba(239, 68, 68, 0.25);
+}
+
+.logout-btn svg {
+    width: 18px;
+    height: 18px;
 }
 
 /* Floating Navbar Rules (仕様準拠: bottom: 16px) */
