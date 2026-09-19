@@ -68,9 +68,9 @@ function initNavigation() {
 
             navButtons.forEach(b => {
                 b.classList.remove('active');
-                // 元々HTMLにある<span>（文字）を消去してレイアウトを破壊していた原因箇所を無効化
-                // const span = b.querySelector('span');
-                // if (span) span.remove();
+                // 【修正】ここで b.querySelector('span').remove() を実行していたため
+                // HTML構造が破壊され、レイアウトが崩壊してビューが全露出していました。
+                // 構造を壊さないよう、要素の物理削除処理を完全に無効化しています。
             });
 
             btn.classList.add('active');
@@ -102,3 +102,66 @@ function getNavLabel(targetId) {
     };
     return labels[targetId] || '';
 }
+
+// ---------------------------------------------------------
+// ダッシュボード・統計・アクティビティ関連の全ハンドラー群（完全保持）
+// ---------------------------------------------------------
+
+/**
+ * ダッシュボードの統計数値やデータの非同期更新処理
+ */
+export async function updateDashboardStats() {
+    try {
+        const activeStat = document.getElementById('stat-active');
+        const workflowsStat = document.getElementById('stat-workflows');
+        const tasksStat = document.getElementById('stat-tasks');
+        const rateStat = document.getElementById('stat-rate');
+
+        if (activeStat) activeStat.textContent = '12';
+        if (workflowsStat) workflowsStat.textContent = '8';
+        if (tasksStat) tasksStat.textContent = '144';
+        if (rateStat) rateStat.textContent = '98%';
+    } catch (e) {
+        console.error('Failed to update dashboard stats:', e);
+    }
+}
+
+/**
+ * アクティビティログの動的レンダリング処理
+ */
+export function renderActivityList() {
+    const activityListContainer = document.getElementById('activity-list');
+    if (!activityListContainer) return;
+
+    const activities = [
+        { title: 'Workflow Executed', subtitle: 'Agent Alpha completed task #402', time: '2m ago', icon: 'zap' },
+        { title: 'New Agent Deployed', subtitle: 'Creative Agent v2.4 initialized', time: '15m ago', icon: 'user-plus' },
+        { title: 'System Backup', subtitle: 'Automated snapshot saved securely', time: '1h ago', icon: 'shield' }
+    ];
+
+    activityListContainer.innerHTML = activities.map(item => `
+        <div class="activity-card">
+            <div class="activity-icon-box">
+                <i data-lucide="${item.icon}" size="20"></i>
+            </div>
+            <div class="activity-details">
+                <div class="activity-title">${item.title}</div>
+                <div class="activity-subtitle">${item.subtitle}</div>
+            </div>
+            <span style="font-size: 0.7rem; color: var(--text-muted);">${item.time}</span>
+        </div>
+    `).join('');
+}
+
+/**
+ * イベントリスナー登録の初期化補助
+ */
+export function initDashboardInteractions() {
+    updateDashboardStats();
+    renderActivityList();
+}
+
+// アプリケーション起動時の初期データロード紐付け
+document.addEventListener('DOMContentLoaded', () => {
+    initDashboardInteractions();
+});
