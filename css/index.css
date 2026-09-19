@@ -604,3 +604,115 @@ input:checked + .toggle-slider:before {
     font-size: 0.85rem;
     box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
 }
+/* ==================================================
+   Role & Permission Hierarchy Styles
+   ================================================== */
+
+/* Role Badges */
+.role-badge.role-executive {
+    background: rgba(168, 85, 247, 0.2);
+    border: 1px solid rgba(168, 85, 247, 0.5);
+    color: #e9d5ff;
+}
+
+.role-badge.role-admin {
+    background: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.5);
+    color: #93c5fd;
+}
+
+.role-badge.role-developer {
+    background: rgba(234, 179, 8, 0.2);
+    border: 1px solid rgba(234, 179, 8, 0.5);
+    color: #fef08a;
+}
+
+/* Permission Tier Box */
+.permission-tier-card {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 4px;
+}
+
+.permission-tier-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.tier-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tier-title svg {
+    width: 14px;
+    height: 14px;
+    color: #a855f7;
+}
+
+.current-tier-tag {
+    font-size: 0.68rem;
+    background: rgba(168, 85, 247, 0.2);
+    color: #d8b4fe;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+/* Permission Steps List */
+.permission-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    padding-left: 6px;
+}
+
+.perm-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    opacity: 0.4;
+    transition: opacity 0.2s ease;
+}
+
+.perm-step.active {
+    opacity: 1;
+}
+
+.step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    margin-top: 4px;
+}
+
+.perm-step.active .step-dot {
+    background: #a855f7;
+    box-shadow: 0 0 8px #a855f7;
+}
+
+.step-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.step-name {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.step-desc {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+}
