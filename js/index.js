@@ -1,14 +1,13 @@
 /**
  * Application Entry Point
- * ビュー切り替えルーティングおよび初期化処理専用モジュール
+ * ビュー切り替えルーティング・サービスワーカー登録・初期化処理モジュール
  */
 import { renderSettings } from './views/settings.js';
 import { initGlobalEvents, refreshIcons } from './core/events.js';
 
 // ビューごとの描画処理マップ
 const viewRenderers = {
-    'view-settings': renderSettings,
-    // 他のビュー描画関数が存在する場合はここに追加いたします
+    'view-settings': renderSettings
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,7 +19,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Lucideアイコンの初回生成
     refreshIcons();
+
+    // 4. PWA サービスワーカーの登録
+    registerServiceWorker();
 });
+
+/**
+ * PWA Service Worker 登録処理
+ */
+function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('[Service Worker] Registered:', reg.scope))
+                .catch(err => console.error('[Service Worker] Registration failed:', err));
+        });
+    }
+}
 
 /**
  * ボトムナビゲーションのタブ切り替えイベントを制御する関数
@@ -37,7 +52,6 @@ function initNavigation() {
             // --- A. アクティブ表示のクリア ---
             navButtons.forEach(b => {
                 b.classList.remove('active');
-                // 非アクティブ化時にボタン内のテキスト（span）を取り除く
                 const span = b.querySelector('span');
                 if (span) span.remove();
             });
@@ -72,9 +86,6 @@ function initNavigation() {
     });
 }
 
-/**
- * タブIDに応じた表示テキストを取得するユーティリティ
- */
 function getNavLabel(targetId) {
     const labels = {
         'view-home': 'Home',
