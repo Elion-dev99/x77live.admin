@@ -1,33 +1,41 @@
-// /js/core/api.js
+/**
+ * API Core Module
+ * Fetch GET / POST 専用モジュール
+ */
 
-export async function apiGet(path) {
-  // ★ API呼び出し前の抜け殻
-  console.log(`GET: ${path}`);
-
-  try {
-    const res = await fetch(path);
-    if (!res.ok) throw new Error('API Error');
-    return await res.json();
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
+export async function apiGet(endpoint) {
+    try {
+        const response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP Error Status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(`[API GET Error] Endpoint ${endpoint}:`, error);
+        throw error;
+    }
 }
 
-export async function apiPost(path, body) {
-  // ★ API呼び出し前の抜け殻
-  console.log(`POST: ${path}`, body);
-
-  try {
-    const res = await fetch(path, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) throw new Error('API Error');
-    return await res.json();
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
+export async function apiPost(endpoint, bodyData) {
+    try {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(bodyData),
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP Error Status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(`[API POST Error] Endpoint ${endpoint}:`, error);
+        throw error;
+    }
 }
