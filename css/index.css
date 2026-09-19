@@ -1,3 +1,6 @@
+/* ============================================
+   グローバル変数（色・背景・透明度）
+============================================ */
 :root {
   --bg-gradient: radial-gradient(circle at top, #23193a 0%, #110c1f 60%, #07040d 100%);
   --card-bg: rgba(255, 255, 255, 0.05);
@@ -9,26 +12,37 @@
   --text-sub: #9ca3af;
 }
 
+/* タップハイライト除去など */
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
 
+/* ============================================
+   Body（背景・余白）
+   ★ navbar が消えていた原因 → padding-bottom が大きすぎた
+============================================ */
 body {
   margin: 0;
-  padding: env(safe-area-inset-top) 18px calc(95px + env(safe-area-inset-bottom)) 18px;
+
+  /* 下の余白を消す（navbar が画面外に押し出されていた） */
+  padding: env(safe-area-inset-top) 18px 18px 18px;
+
   background: var(--bg-gradient);
   background-attachment: fixed;
   color: var(--text-main);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
 }
 
+/* コンテンツ幅を中央に固定 */
 .container {
   max-width: 400px;
   margin: 0 auto;
 }
 
-/* 画面切替制御 */
+/* ============================================
+   SPA 画面切替制御
+============================================ */
 .view {
   display: none;
 }
@@ -37,7 +51,9 @@ body {
   display: block;
 }
 
-/* プレースホルダー用カード（既存デザインに統合） */
+/* ============================================
+   プレースホルダー用カード
+============================================ */
 .placeholder-card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -52,7 +68,9 @@ body {
   color: var(--text-sub);
 }
 
-/* Header */
+/* ============================================
+   Header（プロフィール）
+============================================ */
 .header {
   display: flex;
   justify-content: space-between;
@@ -104,7 +122,9 @@ body {
   cursor: pointer;
 }
 
-/* 2x2 Grid */
+/* ============================================
+   2x2 Grid（統計カード）
+============================================ */
 .grid-2x2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -161,7 +181,9 @@ body {
   cursor: pointer;
 }
 
-/* Sections */
+/* ============================================
+   Sections（Quick Actions / Recent Activity）
+============================================ */
 .section-block {
   margin-bottom: 22px;
 }
@@ -184,7 +206,7 @@ body {
   text-decoration: none;
 }
 
-/* Quick Actions Scroll */
+/* Quick Actions 横スクロール */
 .quick-actions-scroll {
   display: flex;
   gap: 10px;
@@ -213,7 +235,9 @@ body {
   cursor: pointer;
 }
 
-/* Activity List */
+/* ============================================
+   Recent Activity
+============================================ */
 .activity-list {
   display: flex;
   flex-direction: column;
@@ -267,7 +291,9 @@ body {
   padding: 4px;
 }
 
-/* Floating Bottom Navbar */
+/* ============================================
+   Floating Bottom Navbar（画面下固定）
+============================================ */
 .navbar {
   position: fixed;
   bottom: calc(16px + env(safe-area-inset-bottom));
@@ -275,17 +301,22 @@ body {
   transform: translateX(-50%);
   width: calc(100% - 36px);
   max-width: 364px;
+
   background: rgba(22, 16, 38, 0.82);
   border: 1px solid var(--card-border);
   border-radius: 32px;
   padding: 6px;
+
   backdrop-filter: blur(24px);
+
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 100;
+
+  z-index: 100; /* ★ navbar が埋もれないように */
 }
 
+/* ナビゲーションボタン */
 .nav-btn {
   background: transparent;
   border: none;
@@ -303,6 +334,7 @@ body {
   display: none;
 }
 
+/* Active 状態（紫のハイライト） */
 .nav-btn.active {
   background: var(--accent-gradient);
   color: #ffffff;
