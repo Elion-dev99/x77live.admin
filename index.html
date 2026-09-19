@@ -6,6 +6,12 @@
   <title>x77 Executive Dashboard</title>
   <link rel="stylesheet" href="css/index.css">
   <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="manifest" href="/manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js');
+  }
+</script>
 </head>
 <body>
 
