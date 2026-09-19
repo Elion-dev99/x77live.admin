@@ -1,9 +1,20 @@
 {
   "name": "x77 Executive Dashboard",
-  "short_name": "x77 Exec",
+  "short_name": "x77 Dashboard",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#110c1f",
-  "theme_color": "#110c1f",
-  "icons": []
+  "background_color": "#0b0813",
+  "theme_color": "#0b0813",
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=192&auto=format&fit=crop&q=80",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=512&auto=format&fit=crop&q=80",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
