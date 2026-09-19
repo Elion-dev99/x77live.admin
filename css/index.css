@@ -716,3 +716,216 @@ input:checked + .toggle-slider:before {
     font-size: 0.68rem;
     color: var(--text-muted);
 }
+/* ==================================================
+   Executive Login Screen Styles
+   ================================================== */
+
+.login-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80vh;
+    padding: 20px 8px;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.login-logo-box {
+    width: 60px;
+    height: 60px;
+    background: var(--purple-active);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px auto;
+    box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+    color: #ffffff;
+}
+
+.login-logo-box svg {
+    width: 32px;
+    height: 32px;
+}
+
+.login-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.login-subtitle {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.login-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 24px 20px;
+    backdrop-filter: blur(12px);
+}
+
+.passkey-btn {
+    width: 100%;
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    color: #e9d5ff;
+    padding: 14px;
+    border-radius: 16px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.passkey-btn:active {
+    background: rgba(168, 85, 247, 0.3);
+}
+
+.passkey-btn svg {
+    width: 20px;
+    height: 20px;
+    color: #d8b4fe;
+}
+
+.login-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.login-divider span {
+    padding: 0 10px;
+}
+
+.input-group {
+    margin-bottom: 16px;
+}
+
+.input-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.input-field-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.field-icon {
+    position: absolute;
+    left: 14px;
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+}
+
+.input-field {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 12px 14px 12px 42px;
+    color: var(--text-main);
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.input-field:focus {
+    border-color: #a855f7;
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.primary-btn {
+    width: 100%;
+    background: var(--purple-active);
+    border: none;
+    color: #ffffff;
+    padding: 14px;
+    border-radius: 16px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+    transition: opacity 0.2s ease;
+}
+
+.primary-btn:active {
+    opacity: 0.85;
+}
+
+.primary-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.security-notice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: #a855f7;
+}
+
+.security-notice svg {
+    width: 12px;
+    height: 12px;
+}
+
+/* ログイン時はナビゲーションバーを非表示にするルール */
+body.not-authenticated .navbar {
+    display: none !important;
+}
