@@ -1,376 +1,429 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>x77live Admin</title>
-    <style>
-      * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-      body {
-        background-color: #0b0b12;
-        color: #ffffff;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-      }
+<head>
+  <meta charset="UTF-8">
 
-      /* --- 1. ログイン画面 --- */
-      #authScreen {
-        padding: 2rem 1.5rem;
-        max-width: 400px;
-        margin: auto;
-        width: 100%;
-        text-align: center;
-      }
-      .auth-card {
-        background: #141321;
-        padding: 2rem 1.5rem;
-        border-radius: 24px;
-        border: 1px solid #26243a;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      }
-      .auth-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; color: #fff; }
-      .auth-sub { font-size: 0.85rem; color: #8e8ca8; margin-bottom: 2rem; }
-      
-      .tabs { display: flex; background: #0b0b12; padding: 4px; border-radius: 14px; margin-bottom: 1.5rem; }
-      .tab-btn { flex: 1; padding: 0.6rem; border: none; background: transparent; color: #8e8ca8; font-size: 0.85rem; font-weight: 600; border-radius: 10px; cursor: pointer; }
-      .tab-btn.active { background: #9333ea; color: #fff; }
+  <!-- スマホ最適化 -->
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0,
+                 user-scalable=no, viewport-fit=cover">
 
-      .input-group { text-align: left; margin-bottom: 1.2rem; }
-      .input-group label { display: block; font-size: 0.75rem; color: #8e8ca8; margin-bottom: 0.4rem; font-weight: 600; }
-      .input-group input { width: 100%; padding: 0.8rem 1rem; background: #0b0b12; border: 1px solid #26243a; border-radius: 12px; color: #fff; font-size: 0.95rem; outline: none; }
+  <title>x77 Executive Dashboard</title>
 
-      .btn-purple { width: 100%; padding: 0.9rem; background: linear-gradient(135deg, #a855f7, #7e22ce); border: none; border-radius: 14px; color: #fff; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
-      
-      .status-box { margin-top: 1rem; padding: 0.8rem; border-radius: 12px; font-size: 0.8rem; display: none; text-align: left; word-break: break-all; }
-      .status-box.error { display: block; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; }
-      .status-box.info { display: block; background: rgba(168, 85, 247, 0.15); border: 1px solid #a855f7; color: #d8b4fe; }
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/index.css">
 
-      /* --- 2. ダッシュボード画面（画像デザイン） --- */
-      #dashboardApp { display: none; padding: 1.5rem 1.2rem 6rem 1.2rem; max-width: 500px; margin: 0 auto; width: 100%; }
-      
-      .header-title { font-size: 1.8rem; font-weight: 800; }
-      .header-sub { font-size: 0.85rem; color: #8e8ca8; margin-bottom: 1.5rem; }
+  <!-- アイコン（Lucide） -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-      .user-card {
-        background: #141321;
-        border-radius: 20px;
-        padding: 1.2rem;
-        border: 1px solid #26243a;
-        margin-bottom: 1.5rem;
-      }
-      .user-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-      .avatar { width: 54px; height: 54px; border-radius: 50%; background: #26243a; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; overflow: hidden; }
-      .user-info .name { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
-      .role-badge { background: #3b1d54; color: #c084fc; font-size: 0.65rem; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
-      .user-info .email { font-size: 0.75rem; color: #8e8ca8; margin-top: 2px; }
-      .user-info .id-tag { font-size: 0.7rem; color: #5f5d75; margin-top: 2px; }
-      .btn-edit-profile { width: 100%; padding: 0.6rem; background: #1c1a2e; border: 1px solid #26243a; border-radius: 12px; color: #fff; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+  <!-- PWA設定 -->
+  <link rel="manifest" href="/manifest.json">
 
-      .section-title { font-size: 0.9rem; font-weight: 700; color: #ffffff; margin: 1.5rem 0 0.8rem 0; }
-      
-      .menu-list { background: #141321; border-radius: 20px; border: 1px solid #26243a; overflow: hidden; }
-      .menu-item { display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-bottom: 1px solid #1c1a2e; cursor: pointer; }
-      .menu-item:last-child { border-bottom: none; }
-      .menu-left { display: flex; align-items: center; gap: 0.8rem; }
-      .icon-box { width: 36px; height: 36px; border-radius: 10px; background: #1c1a2e; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
-      .menu-text .title { font-size: 0.9rem; font-weight: 600; }
-      .menu-text .desc { font-size: 0.72rem; color: #8e8ca8; margin-top: 2px; }
-      .arrow { color: #5f5d75; font-size: 0.9rem; }
+  <!-- Service Worker登録 -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js');
+    }
+  </script>
 
-      /* トグルスイッチ */
-      .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-      .switch input { opacity: 0; width: 0; height: 0; }
-      .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #26243a; transition: .3s; border-radius: 24px; }
-      .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-      input:checked + .slider { background-color: #a855f7; }
-      input:checked + .slider:before { transform: translateX(20px); }
+  <!-- Face ID ログイン画面専用スタイル（既存CSSを邪魔しない独立定義） -->
+  <style>
+    #auth-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #0b0b12;
+      z-index: 99999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+      box-sizing: border-box;
+    }
+    .auth-card {
+      background: #141321;
+      padding: 2rem 1.5rem;
+      border-radius: 24px;
+      border: 1px solid #26243a;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .auth-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem; color: #fff; }
+    .auth-sub { font-size: 0.85rem; color: #8e8ca8; margin-bottom: 1.8rem; }
+    
+    .auth-tabs { display: flex; background: #0b0b12; padding: 4px; border-radius: 12px; margin-bottom: 1.5rem; }
+    .auth-tab-btn { flex: 1; padding: 0.6rem; border: none; background: transparent; color: #8e8ca8; font-size: 0.85rem; font-weight: 600; border-radius: 9px; cursor: pointer; }
+    .auth-tab-btn.active { background: #9333ea; color: #fff; }
 
-      /* --- 3. ボトムナビゲーションバー（画像そのまま） --- */
-      .bottom-nav {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: calc(100% - 2.4rem);
-        max-width: 460px;
-        background: #141321;
-        border: 1px solid #26243a;
-        border-radius: 30px;
-        padding: 6px;
-        display: flex;
-        justify-content: space-around;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        backdrop-filter: blur(10px);
-      }
-      .nav-item {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 10px 16px;
-        border-radius: 20px;
-        color: #8e8ca8;
-        font-size: 0.85rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-      .nav-item.active {
-        background: #9333ea;
-        color: #ffffff;
-        box-shadow: 0 4px 15px rgba(147, 51, 234, 0.4);
-      }
-    </style>
-  </head>
-  <body>
+    .auth-input-group { text-align: left; margin-bottom: 1.2rem; }
+    .auth-input-group label { display: block; font-size: 0.75rem; color: #8e8ca8; margin-bottom: 0.4rem; font-weight: 600; }
+    .auth-input-group input { width: 100%; padding: 0.8rem 1rem; background: #0b0b12; border: 1px solid #26243a; border-radius: 12px; color: #fff; font-size: 0.95rem; outline: none; box-sizing: border-box; }
 
-    <!-- 1. Face ID ログイン / 新規登録 画面 -->
-    <div id="authScreen">
-      <div class="auth-card">
-        <h1 class="auth-title">x77live Admin</h1>
-        <p class="auth-sub">Face ID パスキー認証</p>
+    .btn-auth-primary { width: 100%; padding: 0.9rem; background: linear-gradient(135deg, #a855f7, #7e22ce); border: none; border-radius: 14px; color: #fff; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
+    .btn-auth-primary:active { opacity: 0.85; }
 
-        <div class="tabs">
-          <button id="tabLogin" class="tab-btn active">ログイン</button>
-          <button id="tabRegister" class="tab-btn">新規登録</button>
-        </div>
+    .auth-status { margin-top: 1rem; padding: 0.8rem; border-radius: 12px; font-size: 0.8rem; display: none; text-align: left; word-break: break-all; line-height: 1.4; }
+    .auth-status.error { display: block; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; }
+    .auth-status.info { display: block; background: rgba(168, 85, 247, 0.15); border: 1px solid #a855f7; color: #d8b4fe; }
 
-        <!-- ログイン -->
-        <div id="loginForm">
-          <div class="input-group">
-            <label>ユーザー名</label>
-            <input type="text" id="loginUser" value="admin" />
-          </div>
-          <button id="btnDoLogin" class="btn-purple">Face ID でログイン</button>
-        </div>
+    /* ログイン成功前はダッシュボード本体を一時非表示 */
+    .container.protected-hidden {
+      display: none !important;
+    }
+  </style>
+</head>
 
-        <!-- 新規登録 -->
-        <div id="registerForm" style="display: none;">
-          <div class="input-group">
-            <label>登録ユーザー名</label>
-            <input type="text" id="regUser" value="admin" />
-          </div>
-          <button id="btnDoRegister" class="btn-purple">Face ID を登録作成</button>
-        </div>
+<body>
 
-        <div id="statusBox" class="status-box"></div>
+  <!-- ===================================================== -->
+  <!-- Face ID 認証画面（ログイン成功時に自動消去されます） -->
+  <!-- ===================================================== -->
+  <div id="auth-overlay">
+    <div class="auth-card">
+      <h1 class="auth-title">x77 Executive</h1>
+      <p class="auth-sub">Face ID パスキー認証</p>
+
+      <div class="auth-tabs">
+        <button id="authTabLogin" class="auth-tab-btn active">ログイン</button>
+        <button id="authTabRegister" class="auth-tab-btn">新規登録</button>
       </div>
+
+      <!-- ログインフォーム -->
+      <div id="authLoginForm">
+        <div class="auth-input-group">
+          <label for="authLoginUser">ユーザー名</label>
+          <input type="text" id="authLoginUser" value="admin" placeholder="ユーザー名を入力" />
+        </div>
+        <button id="btnAuthLogin" class="btn-auth-primary">Face ID でログイン</button>
+      </div>
+
+      <!-- 新規登録フォーム -->
+      <div id="authRegisterForm" style="display: none;">
+        <div class="auth-input-group">
+          <label for="authRegUser">登録ユーザー名</label>
+          <input type="text" id="authRegUser" value="admin" placeholder="ユーザー名を入力" />
+        </div>
+        <button id="btnAuthRegister" class="btn-auth-primary">Face ID を登録作成</button>
+      </div>
+
+      <div id="authStatus" class="auth-status"></div>
+    </div>
+  </div>
+
+
+  <!-- 全画面を包むコンテナ（元のコードを100%そのまま維持） -->
+  <div class="container protected-hidden">
+
+    <!-- ========================= -->
+    <!-- Header（プロフィール＋通知） -->
+    <!-- ========================= -->
+    <header class="header">
+      <div class="profile">
+        <div class="avatar-wrap">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+               alt="Avatar" class="avatar-img">
+        </div>
+        <div>
+          <div class="profile-sub">Welcome Back,</div>
+          <div class="profile-name">Max John Doe</div>
+        </div>
+      </div>
+
+      <button class="icon-btn" aria-label="Notifications">
+        <i data-lucide="bell" size="18"></i>
+      </button>
+    </header>
+
+
+    <!-- ========================= -->
+    <!-- 1. Home View（初期表示） -->
+    <!-- ========================= -->
+    <div class="view active" id="view-home">
+
+      <!-- 2x2 グリッド統計 -->
+      <section class="grid-2x2">
+
+        <!-- Active Agents -->
+        <div class="stat-card">
+          <div class="card-icon"><i data-lucide="users" size="16"></i></div>
+          <div class="card-label">Active Agents</div>
+          <div class="card-value" id="stat-active">12</div>
+          <button class="see-more-btn">See More <i data-lucide="arrow-right" size="10"></i></button>
+        </div>
+
+        <!-- Running Workflows -->
+        <div class="stat-card">
+          <div class="card-icon"><i data-lucide="workflow" size="16"></i></div>
+          <div class="card-label">Running Workflows</div>
+          <div class="card-value" id="stat-workflows">8</div>
+          <button class="see-more-btn">See More <i data-lucide="arrow-right" size="10"></i></button>
+        </div>
+
+        <!-- Tasks Completed -->
+        <div class="stat-card">
+          <div class="card-icon"><i data-lucide="check-square" size="16"></i></div>
+          <div class="card-label">Tasks Completed</div>
+          <div class="card-value" id="stat-tasks">144</div>
+          <button class="see-more-btn">See More <i data-lucide="arrow-right" size="10"></i></button>
+        </div>
+
+        <!-- Success Rate -->
+        <div class="stat-card">
+          <div class="card-icon"><i data-lucide="line-chart" size="16"></i></div>
+          <div class="card-label">Success Rate</div>
+          <div class="card-value" id="stat-rate">98%</div>
+          <button class="see-more-btn">See More <i data-lucide="arrow-right" size="10"></i></button>
+        </div>
+
+      </section>
+
+
+      <!-- Quick Actions -->
+      <section class="section-block">
+        <div class="section-header">
+          <span class="section-title">Quick Actions</span>
+          <a href="#" class="view-all">View all</a>
+        </div>
+
+        <div class="quick-actions-scroll">
+          <button class="action-chip">
+            <i data-lucide="plus" size="14"></i> Creative Agent
+          </button>
+
+          <button class="action-chip">
+            <i data-lucide="bar-chart-2" size="14"></i> View Analytics
+          </button>
+        </div>
+      </section>
+
+
+      <!-- Recent Activity -->
+      <section class="section-block">
+        <div class="section-header">
+          <span class="section-title">Recent Activity</span>
+          <a href="#" class="view-all">View all</a>
+        </div>
+
+        <div class="activity-list" id="activity-list"></div>
+      </section>
+
+    </div> <!-- /view-home -->
+
+
+    <!-- ========================= -->
+    <!-- 2. Agents View -->
+    <!-- ========================= -->
+    <div class="view" id="view-agents">
+      <section class="section-block">
+        <div class="section-header">
+          <span class="section-title">Agents</span>
+        </div>
+        <div class="placeholder-card">
+          <div class="placeholder-text">Agents Content Area</div>
+        </div>
+      </section>
     </div>
 
-    <!-- 2. ログイン後：管理画面ダッシュボード（お写真の画面） -->
-    <div id="dashboardApp">
-      
-      <!-- PAGE: HOME -->
-      <div id="pageHome" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <div class="avatar">👤</div>
-            <div>
-              <div style="font-size: 0.75rem; color: #8e8ca8;">Welcome Back,</div>
-              <div style="font-size: 1.1rem; font-weight: 700;" class="display-user-name">Max John Doe</div>
-            </div>
-          </div>
-          <div class="icon-box" style="background: #141321; border: 1px solid #26243a;">🔔</div>
-        </div>
 
-        <div style="background: #141321; border-radius: 20px; border: 1px solid #26243a; padding: 3rem 1rem; text-align: center; margin-top: 2rem;">
-          <div style="font-size: 2.5rem; margin-bottom: 1rem;">🚀</div>
-          <h2 style="font-size: 1.2rem; margin-bottom: 0.5rem;">システム正常稼働中</h2>
-          <p style="font-size: 0.8rem; color: #8e8ca8;">Face ID 認証によるログインが完了いたしました。</p>
+    <!-- ========================= -->
+    <!-- 3. Workflows View -->
+    <!-- ========================= -->
+    <div class="view" id="view-workflows">
+      <section class="section-block">
+        <div class="section-header">
+          <span class="section-title">Workflows</span>
         </div>
-      </div>
-
-      <!-- PAGE: SETTINGS（お写真1枚目の画面） -->
-      <div id="pageSettings">
-        <h1 class="header-title">Settings</h1>
-        <p class="header-sub">System and application parameters</p>
-
-        <!-- ユーザープロフィールカード -->
-        <div class="user-card">
-          <div class="user-header">
-            <div class="avatar">👤</div>
-            <div class="user-info">
-              <div class="name">
-                <span class="display-user-name">Max John Doe</span>
-                <span class="role-badge">Executive</span>
-              </div>
-              <div class="email">max.doe@x77executive.com</div>
-              <div class="id-tag">ID: X77-88902-ADMIN</div>
-            </div>
-          </div>
-          <button class="btn-edit-profile">👤 プロフィール編集</button>
+        <div class="placeholder-card">
+          <div class="placeholder-text">Workflows Content Area</div>
         </div>
-
-        <!-- アカウントセキュリティ -->
-        <div class="section-title">アカウントセキュリティ</div>
-        <div class="menu-list">
-          <div class="menu-item">
-            <div class="menu-left">
-              <div class="icon-box">🔑</div>
-              <div class="menu-text">
-                <div class="title">パスワード変更</div>
-                <div class="desc">最終更新: 30日前</div>
-              </div>
-            </div>
-            <div class="arrow">❯</div>
-          </div>
-
-          <div class="menu-item">
-            <div class="menu-left">
-              <div class="icon-box">🛡️</div>
-              <div class="menu-text">
-                <div class="title">2段階認証 (2FA)</div>
-                <div class="desc">認証アプリによる保護が有効です</div>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" checked>
-              <span class="slider"></span>
-            </label>
-          </div>
-
-          <div class="menu-item">
-            <div class="menu-left">
-              <div class="icon-box">📱</div>
-              <div class="menu-text">
-                <div class="title">ログイン中のデバイス</div>
-                <div class="desc">2台のデバイスでアクティブ</div>
-              </div>
-            </div>
-            <div class="arrow">❯</div>
-          </div>
-        </div>
-
-        <!-- システム通知設定 -->
-        <div class="section-title">システム通知設定</div>
-        <div class="menu-list">
-          <div class="menu-item">
-            <div class="menu-left">
-              <div class="icon-box">🔔</div>
-              <div class="menu-text">
-                <div class="title">プッシュ通知</div>
-                <div class="desc">重要アラートおよびワークフロー完了通知</div>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" checked>
-              <span class="slider"></span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- ボトムナビゲーションバー -->
-      <div class="bottom-nav">
-        <div id="navHome" class="nav-item">
-          <span>🏠</span> Home
-        </div>
-        <div class="nav-item">
-          <span>👥</span>
-        </div>
-        <div class="nav-item">
-          <span>ネットワーク</span>
-        </div>
-        <div class="nav-item">
-          <span>アクティビティ</span>
-        </div>
-        <div id="navSettings" class="nav-item active">
-          <span>⚙️</span> Settings
-        </div>
-      </div>
-
+      </section>
     </div>
 
-    <script>
-      // DOM取得
-      const authScreen = document.getElementById('authScreen');
-      const dashboardApp = document.getElementById('dashboardApp');
-      const statusBox = document.getElementById('statusBox');
-      const tabLogin = document.getElementById('tabLogin');
-      const tabRegister = document.getElementById('tabRegister');
-      const loginForm = document.getElementById('loginForm');
-      const registerForm = document.getElementById('registerForm');
 
-      const pageHome = document.getElementById('pageHome');
-      const pageSettings = document.getElementById('pageSettings');
-      const navHome = document.getElementById('navHome');
-      const navSettings = document.getElementById('navSettings');
+    <!-- ========================= -->
+    <!-- 4. Activity View -->
+    <!-- ========================= -->
+    <div class="view" id="view-activity">
+      <section class="section-block">
+        <div class="section-header">
+          <span class="section-title">Activity</span>
+        </div>
+        <div class="placeholder-card">
+          <div class="placeholder-text">Activity Content Area</div>
+        </div>
+      </section>
+    </div>
 
-      // タブ切り替え
-      tabLogin.addEventListener('click', () => {
-        tabLogin.classList.add('active'); tabRegister.classList.remove('active');
-        loginForm.style.display = 'block'; registerForm.style.display = 'none';
-        statusBox.style.display = 'none';
-      });
-      tabRegister.addEventListener('click', () => {
-        tabRegister.classList.add('active'); tabLogin.classList.remove('active');
-        registerForm.style.display = 'block'; loginForm.style.display = 'none';
-        statusBox.style.display = 'none';
+
+    <!-- ========================= -->
+    <!-- 5. Settings View -->
+    <!-- ========================= -->
+    <div class="view" id="view-settings">
+      <section class="section-block">
+        <div class="section-header">
+          <span class="section-title">Settings</span>
+        </div>
+        <div class="placeholder-card">
+          <div class="placeholder-text">Settings Content Area</div>
+        </div>
+      </section>
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- Bottom Floating Navbar（★ container のの中に移動済み） -->
+    <!-- ===================================================== -->
+    <nav class="navbar" id="navbar">
+
+      <!-- SPA画面切替ボタン -->
+      <button class="nav-btn active" data-target="view-home">
+        <i data-lucide="home" size="18"></i>
+        <span class="nav-text">Home</span>
+      </button>
+
+      <button class="nav-btn" data-target="view-agents">
+        <i data-lucide="users" size="18"></i>
+        <span class="nav-text">Agents</span>
+      </button>
+
+      <button class="nav-btn" data-target="view-workflows">
+        <i data-lucide="git-branch" size="18"></i>
+        <span class="nav-text">Workflows</span>
+      </button>
+
+      <button class="nav-btn" data-target="view-activity">
+        <i data-lucide="activity" size="18"></i>
+        <span class="nav-text">Activity</span>
+      </button>
+
+      <button class="nav-btn" data-target="view-settings">
+        <i data-lucide="settings" size="18"></i>
+        <span class="nav-text">Settings</span>
+      </button>
+
+      <!-- ボタン押下イベント（events.jsで拾う） -->
+      <button data-action="update-stock">更新</button>
+      <button data-action="open-settings">設定</button>
+
+    </nav>
+
+  </div> <!-- /container -->
+
+
+  <!-- 初期化JS（元のスクリプトそのまま） -->
+  <script src="js/index.js"></script>
+
+  <!-- Face ID 認証制御用スクリプト -->
+  <script>
+    (function() {
+      const authOverlay = document.getElementById('auth-overlay');
+      const container = document.querySelector('.container');
+      const authTabLogin = document.getElementById('authTabLogin');
+      const authTabRegister = document.getElementById('authTabRegister');
+      const authLoginForm = document.getElementById('authLoginForm');
+      const authRegisterForm = document.getElementById('authRegisterForm');
+      const authStatus = document.getElementById('authStatus');
+
+      // タブ切替
+      authTabLogin.addEventListener('click', () => {
+        authTabLogin.classList.add('active');
+        authTabRegister.classList.remove('active');
+        authLoginForm.style.display = 'block';
+        authRegisterForm.style.display = 'none';
+        hideStatus();
       });
 
-      // ナビゲーション切り替え
-      navHome.addEventListener('click', () => {
-        pageHome.style.display = 'block'; pageSettings.style.display = 'none';
-        navHome.classList.add('active'); navSettings.classList.remove('active');
-      });
-      navSettings.addEventListener('click', () => {
-        pageSettings.style.display = 'block'; pageHome.style.display = 'none';
-        navSettings.classList.add('active'); navHome.classList.remove('active');
+      authTabRegister.addEventListener('click', () => {
+        authTabRegister.classList.add('active');
+        authTabLogin.classList.remove('active');
+        authRegisterForm.style.display = 'block';
+        authLoginForm.style.display = 'none';
+        hideStatus();
       });
 
       function showStatus(msg, type) {
-        statusBox.className = `status-box ${type}`;
-        statusBox.textContent = msg;
+        authStatus.className = `auth-status ${type}`;
+        authStatus.textContent = msg;
       }
 
-      // ログイン成功時の遷移関数
-      function loginSuccess(username) {
-        document.querySelectorAll('.display-user-name').forEach(el => el.textContent = username);
-        authScreen.style.display = 'none';
-        dashboardApp.style.display = 'block';
+      function hideStatus() {
+        authStatus.className = 'auth-status';
+        authStatus.style.display = 'none';
       }
 
-      // --- 1. Face ID 登録 ---
-      document.getElementById('btnDoRegister').addEventListener('click', async () => {
-        const username = document.getElementById('regUser').value.trim();
+      // ログイン成功時に元のダッシュボードを完全に展開
+      function unlockDashboard() {
+        authOverlay.style.display = 'none';
+        container.classList.remove('protected-hidden');
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+          window.lucide.createIcons();
+        }
+      }
+
+      // 1. Face ID 新規登録
+      document.getElementById('btnAuthRegister').addEventListener('click', async () => {
+        const username = document.getElementById('authRegUser').value.trim();
         if(!username) return showStatus('ユーザー名を入力してください。', 'error');
 
-        showStatus('Face ID 画面を読み込み中...', 'info');
+        showStatus('Face ID 認証画面を呼び出しています...', 'info');
+
         try {
-          const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
+          const challenge = new Uint8Array(32);
+          window.crypto.getRandomValues(challenge);
+
           const credential = await navigator.credentials.create({
             publicKey: {
               challenge: challenge,
-              rp: { name: "x77live Admin" },
-              user: { id: new TextEncoder().encode(username), name: username, displayName: username },
+              rp: { name: "x77 Executive Dashboard" },
+              user: {
+                id: new TextEncoder().encode(username),
+                name: username,
+                displayName: username
+              },
               pubKeyCredParams: [{ alg: -7, type: "public-key" }],
-              authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required", residentKey: "required" },
+              authenticatorSelection: {
+                authenticatorAttachment: "platform",
+                userVerification: "required",
+                residentKey: "required"
+              },
               timeout: 60000
             }
           });
-          if(credential) {
+
+          if (credential) {
             const credIdBase64 = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
             localStorage.setItem(`faceid_${username}`, credIdBase64);
-            showStatus('登録が完了しました！「ログイン」タブからFace IDログインをお試しください。', 'info');
+            showStatus(`「${username}」のFace ID登録が完了いたしました！「ログイン」タブからログインを行ってください。`, 'info');
           }
-        } catch(err) {
-          showStatus('登録エラー: ' + err.message, 'error');
+        } catch (err) {
+          console.error(err);
+          let detail = err.name === 'NotAllowedError' ? 'キャンセルされました。' : err.message;
+          showStatus('登録エラー: ' + detail, 'error');
         }
       });
 
-      // --- 2. Face ID ログイン（成功でお写真の画面へ移動） ---
-      document.getElementById('btnDoLogin').addEventListener('click', async () => {
-        const username = document.getElementById('loginUser').value.trim();
+      // 2. Face ID ログイン
+      document.getElementById('btnAuthLogin').addEventListener('click', async () => {
+        const username = document.getElementById('authLoginUser').value.trim();
         if(!username) return showStatus('ユーザー名を入力してください。', 'error');
 
         const savedCredId = localStorage.getItem(`faceid_${username}`);
-        if(!savedCredId) return showStatus('Face IDが登録されていません。「新規登録」から登録してください。', 'error');
+        if(!savedCredId) return showStatus(`「${username}」のFace IDが登録されていません。「新規登録」タブから登録を行ってください。`, 'error');
 
         showStatus('Face ID 認証中...', 'info');
+
         try {
-          const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
+          const challenge = new Uint8Array(32);
+          window.crypto.getRandomValues(challenge);
+
           const rawId = Uint8Array.from(atob(savedCredId), c => c.charCodeAt(0));
+
           const assertion = await navigator.credentials.get({
             publicKey: {
               challenge: challenge,
@@ -379,14 +432,18 @@
               timeout: 60000
             }
           });
-          if(assertion) {
-            // 認証成功 -> 送っていただいた画像通りの画面へ遷移
-            loginSuccess(username);
+
+          if (assertion) {
+            // 認証成功時：オーバーレイを消して元のダッシュボード全機能を表示
+            unlockDashboard();
           }
-        } catch(err) {
-          showStatus('ログインエラー: ' + err.message, 'error');
+        } catch (err) {
+          console.error(err);
+          let detail = err.name === 'NotAllowedError' ? 'キャンセルされました。' : err.message;
+          showStatus('ログインエラー: ' + detail, 'error');
         }
       });
-    </script>
-  </body>
+    })();
+  </script>
+</body>
 </html>
