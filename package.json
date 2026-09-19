@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "npx vite --host"
+    "start": "npx vite --host",
+    "build": "vite build"
   },
   "devDependencies": {
     "vite": "^6.0.0"
