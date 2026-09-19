@@ -1,24 +1,49 @@
-// /js/core/events.js
+/**
+ * Global Events Module
+ * UIアクションの処理および Lucide アイコン再描画専用モジュール
+ */
 
-export function setupEvents() {
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-action]');
-    if (!btn) return;
-
-    const action = btn.dataset.action;
-
-    // ★ ここが紬稀が後で書く“抜け殻”
-    switch(action) {
-      case 'update-stock':
-        console.log('在庫更新ボタン押下（抜け殻）');
-        break;
-
-      case 'open-settings':
-        console.log('設定ボタン押下（抜け殻）');
-        break;
-
-      default:
-        console.log(`未定義アクション: ${action}`);
+/**
+ * Lucide アイコンの再描画実行関数
+ */
+export function refreshIcons() {
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
     }
-  });
+}
+
+/**
+ * グローバル UI イベントリスナー（data-action属性の監視）
+ */
+export function initGlobalEvents() {
+    document.addEventListener('click', (e) => {
+        const actionTarget = e.target.closest('[data-action]');
+        if (!actionTarget) return;
+
+        const action = actionTarget.getAttribute('data-action');
+        handleAction(action, actionTarget);
+    });
+}
+
+function handleAction(action, target) {
+    switch (action) {
+        case 'see-more':
+            console.log('[UI Event] See More triggered');
+            break;
+        case 'view-all':
+            console.log('[UI Event] View All triggered');
+            break;
+        case 'creative-agent':
+            console.log('[UI Event] Creative Agent action triggered');
+            break;
+        case 'view-analytics':
+            console.log('[UI Event] View Analytics action triggered');
+            break;
+        case 'notifications':
+            console.log('[UI Event] Notifications clicked');
+            break;
+        default:
+            console.log(`[UI Event] Action triggered: ${action}`);
+            break;
+    }
 }
