@@ -1,0 +1,11 @@
+{
+  "name": "x77-executive-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npx vite --host"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
