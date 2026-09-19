@@ -1,3 +1,9 @@
+import { setupNavigation } from './core/navigation.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+  setupNavigation();
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
   fetchDashboardData();
