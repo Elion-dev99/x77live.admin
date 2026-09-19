@@ -26,93 +26,89 @@
     }
   </script>
 
-  <!-- Face ID ログインオーバーレイ専用スタイル（本体CSSに影響を与えない独立設計） -->
+  <!-- Face ID ログインオーバーレイ専用CSS（元レイアウトに一切影響しないよう独立定義） -->
   <style>
-    #auth-overlay {
+    #faceid-login-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background-color: #0b0b12;
-      z-index: 999999;
+      background: #0b0b12;
+      z-index: 2147483647;
       display: flex;
-      justify-content: center;
       align-items: center;
-      padding: 1.5rem;
+      justify-content: center;
+      padding: 20px;
       box-sizing: border-box;
-    }
-    .auth-card {
-      background: #141321;
-      padding: 2rem 1.5rem;
-      border-radius: 24px;
-      border: 1px solid #26243a;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-      width: 100%;
-      max-width: 380px;
-      text-align: center;
-      color: #ffffff;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    .auth-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem; color: #fff; }
-    .auth-sub { font-size: 0.85rem; color: #8e8ca8; margin-bottom: 1.8rem; }
+    .fid-card {
+      background: #141321;
+      border: 1px solid #26243a;
+      border-radius: 24px;
+      padding: 28px 20px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+      color: #ffffff;
+    }
+    .fid-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+    .fid-sub { font-size: 13px; color: #8e8ca8; margin-bottom: 24px; }
     
-    .auth-tabs { display: flex; background: #0b0b12; padding: 4px; border-radius: 12px; margin-bottom: 1.5rem; }
-    .auth-tab-btn { flex: 1; padding: 0.6rem; border: none; background: transparent; color: #8e8ca8; font-size: 0.85rem; font-weight: 600; border-radius: 9px; cursor: pointer; }
-    .auth-tab-btn.active { background: #9333ea; color: #fff; }
+    .fid-tabs { display: flex; background: #0b0b12; padding: 4px; border-radius: 12px; margin-bottom: 20px; }
+    .fid-tab { flex: 1; padding: 10px; border: none; background: transparent; color: #8e8ca8; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; }
+    .fid-tab.active { background: #9333ea; color: #ffffff; }
 
-    .auth-input-group { text-align: left; margin-bottom: 1.2rem; }
-    .auth-input-group label { display: block; font-size: 0.75rem; color: #8e8ca8; margin-bottom: 0.4rem; font-weight: 600; }
-    .auth-input-group input { width: 100%; padding: 0.8rem 1rem; background: #0b0b12; border: 1px solid #26243a; border-radius: 12px; color: #fff; font-size: 0.95rem; outline: none; box-sizing: border-box; }
+    .fid-field { text-align: left; margin-bottom: 18px; }
+    .fid-field label { display: block; font-size: 12px; color: #8e8ca8; margin-bottom: 6px; font-weight: 600; }
+    .fid-field input { width: 100%; padding: 12px 14px; background: #0b0b12; border: 1px solid #26243a; border-radius: 10px; color: #ffffff; font-size: 14px; outline: none; box-sizing: border-box; }
 
-    .btn-auth-primary { width: 100%; padding: 0.9rem; background: linear-gradient(135deg, #a855f7, #7e22ce); border: none; border-radius: 14px; color: #fff; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
-    .btn-auth-primary:active { opacity: 0.85; }
+    .fid-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #a855f7, #7e22ce); border: none; border-radius: 12px; color: #ffffff; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .fid-btn:active { opacity: 0.85; }
 
-    .auth-status { margin-top: 1rem; padding: 0.8rem; border-radius: 12px; font-size: 0.8rem; display: none; text-align: left; word-break: break-all; line-height: 1.4; }
-    .auth-status.error { display: block; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; }
-    .auth-status.info { display: block; background: rgba(168, 85, 247, 0.15); border: 1px solid #a855f7; color: #d8b4fe; }
+    .fid-msg { margin-top: 14px; padding: 10px 12px; border-radius: 10px; font-size: 12px; display: none; text-align: left; line-height: 1.4; word-break: break-all; }
+    .fid-msg.err { display: block; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; }
+    .fid-msg.info { display: block; background: rgba(168, 85, 247, 0.15); border: 1px solid #a855f7; color: #d8b4fe; }
   </style>
 </head>
 
 <body>
 
-  <!-- ===================================================== -->
-  <!-- Face ID 認証画面（全画面最前面に配置） -->
-  <!-- ===================================================== -->
-  <div id="auth-overlay">
-    <div class="auth-card">
-      <h1 class="auth-title">x77 Executive</h1>
-      <p class="auth-sub">Face ID パスキル認証</p>
+  <!-- Face ID 認証画面 (オーバーレイ) -->
+  <div id="faceid-login-overlay">
+    <div class="fid-card">
+      <div class="fid-title">x77 Executive</div>
+      <div class="fid-sub">Face ID パスキー認証</div>
 
-      <div class="auth-tabs">
-        <button id="authTabLogin" class="auth-tab-btn active">ログイン</button>
-        <button id="authTabRegister" class="auth-tab-btn">新規登録</button>
+      <div class="fid-tabs">
+        <button id="fidTabLogin" class="fid-tab active">ログイン</button>
+        <button id="fidTabReg" class="fid-tab">新規登録</button>
       </div>
 
-      <!-- ログインフォーム -->
-      <div id="authLoginForm">
-        <div class="auth-input-group">
-          <label for="authLoginUser">ユーザー名</label>
-          <input type="text" id="authLoginUser" value="admin" placeholder="ユーザー名を入力" />
+      <div id="fidBoxLogin">
+        <div class="fid-field">
+          <label>ユーザー名</label>
+          <input type="text" id="fidUserLogin" value="admin">
         </div>
-        <button id="btnAuthLogin" class="btn-auth-primary">Face ID でログイン</button>
+        <button id="fidBtnLogin" class="fid-btn">Face ID でログイン</button>
       </div>
 
-      <!-- 新規登録フォーム -->
-      <div id="authRegisterForm" style="display: none;">
-        <div class="auth-input-group">
-          <label for="authRegUser">登録ユーザー名</label>
-          <input type="text" id="authRegUser" value="admin" placeholder="ユーザー名を入力" />
+      <div id="fidBoxReg" style="display: none;">
+        <div class="fid-field">
+          <label>登録ユーザー名</label>
+          <input type="text" id="fidUserReg" value="admin">
         </div>
-        <button id="btnAuthRegister" class="btn-auth-primary">Face ID を登録作成</button>
+        <button id="fidBtnReg" class="fid-btn">Face ID を登録作成</button>
       </div>
 
-      <div id="authStatus" class="auth-status"></div>
+      <div id="fidMsg" class="fid-msg"></div>
     </div>
   </div>
 
 
-  <!-- 全画面を包むコンテナ（元のコードそのままで裏で描画） -->
+  <!-- 全画面を包むコンテナ（★元のコード100%完全そのまま★） -->
   <div class="container">
 
     <!-- ========================= -->
@@ -272,7 +268,7 @@
 
 
     <!-- ===================================================== -->
-    <!-- Bottom Floating Navbar -->
+    <!-- Bottom Floating Navbar（★ container の中に移動済み） -->
     <!-- ===================================================== -->
     <nav class="navbar" id="navbar">
 
@@ -302,143 +298,121 @@
         <span class="nav-text">Settings</span>
       </button>
 
+      <!-- ボタン押下イベント（events.jsで拾う） -->
+      <button data-action="update-stock">更新</button>
+      <button data-action="open-settings">設定</button>
+
     </nav>
 
   </div> <!-- /container -->
 
 
-  <!-- 初期化JS -->
+  <!-- 初期化JS（★元のスクリプトそのまま★） -->
   <script src="js/index.js"></script>
 
-  <!-- Face ID 認証制御スクリプト -->
+  <!-- Face ID 制御スクリプト（元コードに何の影響も与えない独立処理） -->
   <script>
     (function() {
-      const authOverlay = document.getElementById('auth-overlay');
-      const authTabLogin = document.getElementById('authTabLogin');
-      const authTabRegister = document.getElementById('authTabRegister');
-      const authLoginForm = document.getElementById('authLoginForm');
-      const authRegisterForm = document.getElementById('authRegisterForm');
-      const authStatus = document.getElementById('authStatus');
+      var overlay = document.getElementById('faceid-login-overlay');
+      var tabLogin = document.getElementById('fidTabLogin');
+      var tabReg = document.getElementById('fidTabReg');
+      var boxLogin = document.getElementById('fidBoxLogin');
+      var boxReg = document.getElementById('fidBoxReg');
+      var msgBox = document.getElementById('fidMsg');
 
-      // タブ切替
-      authTabLogin.addEventListener('click', () => {
-        authTabLogin.classList.add('active');
-        authTabRegister.classList.remove('active');
-        authLoginForm.style.display = 'block';
-        authRegisterForm.style.display = 'none';
-        hideStatus();
+      tabLogin.addEventListener('click', function() {
+        tabLogin.className = 'fid-tab active';
+        tabReg.className = 'fid-tab';
+        boxLogin.style.display = 'block';
+        boxReg.style.display = 'none';
+        msgBox.style.display = 'none';
       });
 
-      authTabRegister.addEventListener('click', () => {
-        authTabRegister.classList.add('active');
-        authTabLogin.classList.remove('active');
-        authRegisterForm.style.display = 'block';
-        authLoginForm.style.display = 'none';
-        hideStatus();
+      tabReg.addEventListener('click', function() {
+        tabReg.className = 'fid-tab active';
+        tabLogin.className = 'fid-tab';
+        boxReg.style.display = 'block';
+        boxLogin.style.display = 'none';
+        msgBox.style.display = 'none';
       });
 
-      function showStatus(msg, type) {
-        authStatus.className = `auth-status ${type}`;
-        authStatus.textContent = msg;
+      function showMsg(text, type) {
+        msgBox.className = 'fid-msg ' + type;
+        msgBox.textContent = text;
       }
 
-      function hideStatus() {
-        authStatus.className = 'auth-status';
-        authStatus.style.display = 'none';
-      }
-
-      // ログイン成功時にオーバーレイを消去し、アイコンを再初期化
-      function unlockDashboard() {
-        authOverlay.style.display = 'none';
+      function unlock() {
+        overlay.style.display = 'none';
         if (window.lucide && typeof window.lucide.createIcons === 'function') {
           window.lucide.createIcons();
         }
       }
 
-      // ページロード時にもLucideアイコンを確実に適用
-      window.addEventListener('DOMContentLoaded', () => {
-        if (window.lucide && typeof window.lucide.createIcons === 'function') {
-          window.lucide.createIcons();
-        }
-      });
+      // 新規登録
+      document.getElementById('fidBtnReg').addEventListener('click', async function() {
+        var user = document.getElementById('fidUserReg').value.trim();
+        if (!user) return showMsg('ユーザー名を入力してください。', 'err');
 
-      // 1. Face ID 新規登録
-      document.getElementById('btnAuthRegister').addEventListener('click', async () => {
-        const username = document.getElementById('authRegUser').value.trim();
-        if(!username) return showStatus('ユーザー名を入力してください。', 'error');
-
-        showStatus('Face ID 認証画面を呼び出しています...', 'info');
-
+        showMsg('Face ID 認証準備中...', 'info');
         try {
-          const challenge = new Uint8Array(32);
+          var challenge = new Uint8Array(32);
           window.crypto.getRandomValues(challenge);
-
-          const credential = await navigator.credentials.create({
+          var cred = await navigator.credentials.create({
             publicKey: {
               challenge: challenge,
-              rp: { name: "x77 Executive Dashboard" },
-              user: {
-                id: new TextEncoder().encode(username),
-                name: username,
-                displayName: username
-              },
+              rp: { name: "x77 Executive" },
+              user: { id: new TextEncoder().encode(user), name: user, displayName: user },
               pubKeyCredParams: [{ alg: -7, type: "public-key" }],
-              authenticatorSelection: {
-                authenticatorAttachment: "platform",
-                userVerification: "required",
-                residentKey: "required"
-              },
+              authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required", residentKey: "required" },
               timeout: 60000
             }
           });
-
-          if (credential) {
-            const credIdBase64 = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
-            localStorage.setItem(`faceid_${username}`, credIdBase64);
-            showStatus(`「${username}」のFace ID登録が完了いたしました。「ログイン」タブからログインを行ってください。`, 'info');
+          if (cred) {
+            var rawId = new Uint8Array(cred.rawId);
+            var str = '';
+            for (var i = 0; i < rawId.length; i++) str += String.fromCharCode(rawId[i]);
+            localStorage.setItem('fid_' + user, btoa(str));
+            showMsg('登録が完了しました。「ログイン」タブへ切り替えてログインをお試しください。', 'info');
           }
-        } catch (err) {
-          console.error(err);
-          let detail = err.name === 'NotAllowedError' ? 'キャンセルされました。' : err.message;
-          showStatus('登録エラー: ' + detail, 'error');
+        } catch(e) {
+          showMsg('登録に失敗しました: ' + (e.name === 'NotAllowedError' ? 'キャンセルされました' : e.message), 'err');
         }
       });
 
-      // 2. Face ID ログイン
-      document.getElementById('btnAuthLogin').addEventListener('click', async () => {
-        const username = document.getElementById('authLoginUser').value.trim();
-        if(!username) return showStatus('ユーザー名を入力してください。', 'error');
+      // ログイン
+      document.getElementById('fidBtnLogin').addEventListener('click', async function() {
+        var user = document.getElementById('fidUserLogin').value.trim();
+        if (!user) return showMsg('ユーザー名を入力してください。', 'err');
 
-        const savedCredId = localStorage.getItem(`faceid_${username}`);
-        if(!savedCredId) return showStatus(`「${username}」のFace IDが登録されていません。「新規登録」タブから登録を行ってください。`, 'error');
+        var saved = localStorage.getItem('fid_' + user);
+        if (!saved) return showMsg('登録されたFace IDが見つかりません。「新規登録」を行ってください。', 'err');
 
-        showStatus('Face ID 認証中...', 'info');
-
+        showMsg('Face ID 照合中...', 'info');
         try {
-          const challenge = new Uint8Array(32);
+          var challenge = new Uint8Array(32);
           window.crypto.getRandomValues(challenge);
+          var bStr = atob(saved);
+          var bytes = new Uint8Array(bStr.length);
+          for (var i = 0; i < bStr.length; i++) bytes[i] = bStr.charCodeAt(i);
 
-          const rawId = Uint8Array.from(atob(savedCredId), c => c.charCodeAt(0));
-
-          const assertion = await navigator.credentials.get({
+          var assertion = await navigator.credentials.get({
             publicKey: {
               challenge: challenge,
-              allowCredentials: [{ id: rawId, type: 'public-key' }],
+              allowCredentials: [{ id: bytes, type: 'public-key' }],
               userVerification: 'required',
               timeout: 60000
             }
           });
 
           if (assertion) {
-            unlockDashboard();
+            unlock();
           }
-        } catch (err) {
-          console.error(err);
-          let detail = err.name === 'NotAllowedError' ? 'キャンセルされました。' : err.message;
-          showStatus('ログインエラー: ' + detail, 'error');
+        } catch(e) {
+          showMsg('ログインに失敗しました: ' + (e.name === 'NotAllowedError' ? 'キャンセルされました' : e.message), 'err');
         }
       });
     })();
   </script>
+
 </body>
 </html>
