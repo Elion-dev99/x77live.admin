@@ -71,6 +71,10 @@ function handleAction(action, target) {
         case 'toggle-push':
             console.log(`[Settings Event] Push notifications toggled: ${target.checked}`);
             break;
+        // handleAction 内の switch に追記
+        case 'request-role-upgrade':
+            alert('管理者および開発者へ権限昇格申請を送信いたしました。');
+            break;
         case 'logout':
             console.log('[Account Event] Logout sequence initiated');
             if (confirm('ログアウトしますか？')) {
