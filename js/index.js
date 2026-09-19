@@ -1,8 +1,7 @@
 /**
- * Application Entry Point
- * 認証状態監視・ビュー切り替えルーティング・初期化モジュール
+ * Application Entry Point & Controller Module
+ * (ログイン実装前の初期バージョン)
  */
-import { renderLogin } from './views/login.js';
 import { renderSettings } from './views/settings.js';
 import { initGlobalEvents, refreshIcons } from './core/events.js';
 
@@ -12,34 +11,11 @@ const viewRenderers = {
 
 document.addEventListener('DOMContentLoaded', () => {
     initGlobalEvents();
-    checkAuthAndInit();
+    initNavigation();
+    showView('view-home');
+    initDashboardInteractions();
+    refreshIcons();
 });
-
-/**
- * 認証状態チェックおよび初期画面の起動制御
- */
-function checkAuthAndInit() {
-    const isAuthenticated = sessionStorage.getItem('x77_auth') === 'true';
-
-    if (!isAuthenticated) {
-        // 未認証時：ナビゲーション非表示＆ログイン画面を表示
-        document.body.classList.add('not-authenticated');
-        showView('view-login');
-        renderLogin(() => {
-            // ログイン成功時のコールバック
-            document.body.classList.remove('not-authenticated');
-            showView('view-home');
-            initNavigation();
-            refreshIcons();
-        });
-    } else {
-        // 認証済み時：メイン画面表示
-        document.body.classList.remove('not-authenticated');
-        showView('view-home');
-        initNavigation();
-        refreshIcons();
-    }
-}
 
 /**
  * 指定ビューのみ表示するユーティリティ関数
@@ -68,20 +44,10 @@ function initNavigation() {
 
             navButtons.forEach(b => {
                 b.classList.remove('active');
-                // 【修正】ここで b.querySelector('span').remove() を実行していたため
-                // HTML構造が破壊され、レイアウトが崩壊してビューが全露出していました。
-                // 構造を壊さないよう、要素の物理削除処理を完全に無効化しています。
             });
 
             btn.classList.add('active');
             showView(targetViewId);
-
-            const labelText = getNavLabel(targetViewId);
-            if (labelText && !btn.querySelector('span')) {
-                const span = document.createElement('span');
-                span.textContent = labelText;
-                btn.appendChild(span);
-            }
 
             if (typeof viewRenderers[targetViewId] === 'function') {
                 await viewRenderers[targetViewId]();
@@ -91,21 +57,6 @@ function initNavigation() {
         };
     });
 }
-
-function getNavLabel(targetId) {
-    const labels = {
-        'view-home': 'Home',
-        'view-agents': 'Agents',
-        'view-workflows': 'Workflows',
-        'view-activity': 'Activity',
-        'view-settings': 'Settings'
-    };
-    return labels[targetId] || '';
-}
-
-// ---------------------------------------------------------
-// ダッシュボード・統計・アクティビティ関連の全ハンドラー群（完全保持）
-// ---------------------------------------------------------
 
 /**
  * ダッシュボードの統計数値やデータの非同期更新処理
@@ -160,8 +111,3 @@ export function initDashboardInteractions() {
     updateDashboardStats();
     renderActivityList();
 }
-
-// アプリケーション起動時の初期データロード紐付け
-document.addEventListener('DOMContentLoaded', () => {
-    initDashboardInteractions();
-});
